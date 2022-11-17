@@ -1,12 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from django.http import request
 from django.shortcuts import render, redirect
 from django.views import View, generic
 from django.views.generic.edit import CreateView
 
-from models import Donation
+from charity_app.models import Donation
 
 """Add url, and change main in login"""
 
@@ -15,13 +14,14 @@ from models import Donation
 
 class LandingPage(View):
 
-    def get(self):
+    def get(self, request):
         return render(request, 'index.html')
 
 
 class AddDonation(CreateView):
     model = Donation
     fields = '__all__'
+    template_name = 'form.html'
 
 
 def login_view(request):
@@ -35,7 +35,7 @@ def login_view(request):
         if user:
             login(request, user)
             messages.success(request, "Login!")
-            return redirect("main")
+            return redirect("Landing_page")
         else:
             messages.warning(request, "Mistake in login or password")
             return render(request, "login.html")
@@ -44,10 +44,10 @@ def login_view(request):
 def logout_view(request):
     """logout view"""
     logout(request)
-    return redirect("main")
+    return redirect("Landing_page")
 
 
 class Register(generic.CreateView):
     form_class = UserCreationForm
-    # success_url =
+    success_url = 'index.html'
     template_name = 'register.html'

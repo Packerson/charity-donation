@@ -1,16 +1,23 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.views import generic, View
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 
 from charity_app.models import Donation, Institution, Category
 
 
-class LandingPage(View):
-    """count bags and institutions"""
+class LandingPage(ListView):
+    model = Institution
+    template_name = "index.html"
+    paginate_by = 4
 
+    """count bags and institutions"""
     @staticmethod
     def count_bags_and_donated_institutions():
         donations = Donation.objects.all()
@@ -65,11 +72,24 @@ class LandingPage(View):
         context_2 = {'foundations': foundations, 'non_g_o': non_g_o, 'local': local}
         return context_2
 
-    def get(self, request):
-        context = self.count_bags_and_donated_institutions()
+    def get_context_data(self, **kwargs):
+        context = super(LandingPage, self).get_context_data(**kwargs)
+        context.update(self.count_bags_and_donated_institutions())
         context.update(self.landing_page_institutions())
 
-        return render(request, 'index.html', context)
+        # paginator = Paginator(context[foundations], self.paginate_by)
+        #
+        # page = self.request.GET.get('page')
+        #
+        # try:
+        #     file_exams = paginator.page(page)
+        # except PageNotAnInteger:
+        #     file_exams = paginator.page(1)
+        # except EmptyPage:
+        #     file_exams = paginator.page(paginator.num_pages)
+        #
+        # context['list_exams'] = file_exams
+        return context
 
 
 class AddDonation(CreateView):

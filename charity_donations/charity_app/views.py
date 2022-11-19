@@ -10,7 +10,7 @@ from charity_app.models import Donation
 """Add url, and change main in login"""
 
 
-# Create your views here.
+# Create your viewhttps://spidersweb.pl/2022/11/elizabeth-holmes-theranos-11-lat-wiezienia.html?fbclid=IwAR1hr0-MugWeG4a3PMzLYrm0uPiRqcsVBa43FocBdwAmJfzD1XpDVpqIilEs here.
 
 class LandingPage(View):
 

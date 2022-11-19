@@ -7,15 +7,29 @@ from django.views.generic.edit import CreateView
 
 from charity_app.models import Donation
 
-"""Add url, and change main in login"""
-
-
-# Create your viewhttps://spidersweb.pl/2022/11/elizabeth-holmes-theranos-11-lat-wiezienia.html?fbclid=IwAR1hr0-MugWeG4a3PMzLYrm0uPiRqcsVBa43FocBdwAmJfzD1XpDVpqIilEs here.
 
 class LandingPage(View):
+    """counter bags and institutions"""
+
+    @staticmethod
+    def count_bags_and_donated_institutions():
+        donations = Donation.objects.all()
+        bags_counter = 0
+        institutions_array = []
+
+        for donation in donations:
+            bags_counter += donation.quantity
+            if donation.institution not in institutions_array:
+                institutions_array.append(donation.institution)
+
+        institutions_counter = len(institutions_array)
+        context = {'institutions_counter': institutions_counter,
+                   'bags_counter': bags_counter}
+        return context
 
     def get(self, request):
-        return render(request, 'index.html')
+        context = self.count_bags_and_donated_institutions()
+        return render(request, 'index.html', context)
 
 
 class AddDonation(CreateView):

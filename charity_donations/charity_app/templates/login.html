@@ -5,11 +5,11 @@
     <header>
       <nav class="container container--70">
         <ul class="nav--actions">
-          <li><a href="#">Zaloguj</a></li>
-          <li class="highlighted"><a href="#">Załóż konto</a></li>
+          <li><a href="{% url 'login' %}">Zaloguj</a></li>
+          <li class="highlighted"><a href="{% url 'Register' %}">Załóż konto</a></li>
         </ul>
 
-        {% include 'nav_bar_5.html' %}
+        {% include 'nav_bar_6.html' %}
       </nav>
     </header>
 
@@ -31,7 +31,7 @@
       </form>
     </section>
 
-    {% include 'footer.html' %}
+
 
   </body>
 {% endblock %}

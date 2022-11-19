@@ -9,7 +9,7 @@
           <li><a href="{% url 'login' %}" class="btn btn--small btn--without-border">Zaloguj</a></li>
           <li><a href="{% url 'Register' %}" class="btn btn--small btn--highlighted">Załóż konto</a></li>
         </ul>
-                 <ul>
+        <ul>
           <li><a href="{% url 'Landing_page' %}" class="btn btn--without-border active">Start</a></li>
           <li><a href="#steps" class="btn btn--without-border">O co chodzi?</a></li>
           <li><a href="#about-us" class="btn btn--without-border">O nas</a></li>
@@ -222,9 +222,11 @@
         -->
       </div>
     </section>
-    <section id="contact" >
-      {% include 'footer.html' %}
-    </section>
+
+
+
     <script src="{% static 'js/app.js' %}"></script>
-  </body>
+
+
+
 {% endblock %}

@@ -8,6 +8,9 @@ User = get_user_model()
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class Institution(models.Model):
     Institution_CHOICES = (
@@ -21,6 +24,9 @@ class Institution(models.Model):
     type = models.CharField(max_length=100, choices=Institution_CHOICES,
                             default='FDN')
     categories = models.ManyToManyField(Category)
+
+    def __str__(self):
+        return self.name
 
 
 class Donation(models.Model):

@@ -1,21 +1,27 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views import generic, View
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, FormView
 
-from charity_app.models import Donation, Institution, Category
+from charity_app.models import Donation, Institution, Category, User
+from charity_app.forms import SignUpForm
 
+
+"""remove username in USER!? 
+https://docs.djangoproject.com/en/2.0/topics/auth/customizing/"""
 
 class LandingPage(ListView):
     model = Institution
     template_name = "index.html"
-    paginate_by = 4
+    # paginate_by = 4
 
     """count bags and institutions"""
     @staticmethod
@@ -121,7 +127,15 @@ def logout_view(request):
     return redirect("Landing_page")
 
 
-class Register(generic.CreateView):
-    form_class = UserCreationForm
-    success_url = 'index.html'
+class Register(SuccessMessageMixin, CreateView):
+    form_class = SignUpForm
+    # model = User
+    success_url = reverse_lazy('templates/login.html')
     template_name = 'register.html'
+    success_message = "Your profile was created successfully"
+
+
+    # def form_valid(self, form):
+    #     form.save()
+    #     messages.success('form is valid')
+    #     return super(Register, self).form_valid(form)

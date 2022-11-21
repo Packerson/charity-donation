@@ -17,8 +17,7 @@ from charity_app.forms import SignUpForm
 
 """
 add messages to  form in template!
-remove username in USER!? 
-https://docs.djangoproject.com/en/2.0/topics/auth/customizing/"""
+"""
 
 class LandingPage(ListView):
     model = Institution
@@ -111,9 +110,11 @@ def login_view(request):
     if request.method == "GET":
         return render(request, "login.html")
     else:
-        username = request.POST["username"]
+        email = request.POST["email"]
         password = request.POST["password"]
-        user = authenticate(username=username, password=password)
+        user = authenticate(username=email, password=password)
+        if not user:
+            return redirect("Register")
         if user:
             login(request, user)
             messages.success(request, "Login!")

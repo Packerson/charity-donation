@@ -2,18 +2,19 @@
 {% block content %}
 
   <body>
+  {% block header_class %}
     <header>
-      <nav class="container container--70">
-        <ul class="nav--actions">
-          <li><a href="{% url 'login' %}">Zaloguj</a></li>
-          <li class="highlighted"><a href="{% url 'Register' %}">Załóż konto</a></li>
-        </ul>
+      {% endblock %}
 
-        {% include 'nav_bar_6.html' %}
+      {% block nav_bar %}
+
+      {% endblock %}
       </nav>
     </header>
 
     <section class="login-page">
+      <form action="" method="post">
+        {% csrf_token %}
       <h2>Zaloguj się</h2>
       <form>
         <div class="form-group">
@@ -25,7 +26,7 @@
         </div>
 
         <div class="form-group form-group--buttons">
-          <a href="#" class="btn btn--without-border">Załóż konto</a>      
+          <a href="{% url 'Register' %}" class="btn btn--without-border">Załóż konto</a>
           <button class="btn" type="submit">Zaloguj się</button> 
         </div>
       </form>

@@ -1,14 +1,52 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  </head>
+            <title>Document</title>
+            <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+          </head>
+
+         <body>
+                            {% block header_class %}
+                <header class="header--main-page">
+                                {% endblock %}
+                  <nav class="container container--70">
+
+                    <ul class="nav--actions">
+                        {% if user.is_authenticated %}
+                            <li class="logged-user">
+                                Witaj {{ user.username }}
+                                <ul class="dropdown">
+                                  <li><a href="#">Profil</a></li>
+                                  <li><a href="#">Moje zbiórki</a></li>
+                                  <li><a href="{% url 'logout' %}">Wyloguj</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        {% else %}
+                      <li><a href="{% url 'login' %}" class="btn btn--small btn--without-border">Zaloguj</a></li>
+                      <li><a href="{% url 'Register' %}" class="btn btn--small btn--highlighted">Załóż konto</a></li>
+                    </ul>
+                      {% endif %}
+
+
+                    <ul>
+                      <li><a href="{% url 'Landing_page' %}" class="btn btn--without-border active">Start</a></li>
+                      <li><a href="#steps" class="btn btn--without-border">O co chodzi?</a></li>
+                      <li><a href="#about-us" class="btn btn--without-border">O nas</a></li>
+                      <li><a href="#help" class="btn btn--without-border">Fundacje i organizacje</a></li>
+                        {% block nav_bar %}
+                      <li><a href="{% url 'Add_donation' %}" class="btn btn--without-border">Przekaż dary</a></li>
+                                {% endblock %}
+
+                      <li><a href="#contact" class="btn btn--without-border">Kontakt</a></li>
+                    </ul>
+
+            </nav>
         {% block content %}
 
         {% endblock %}

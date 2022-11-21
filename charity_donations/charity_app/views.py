@@ -15,7 +15,9 @@ from charity_app.models import Donation, Institution, Category, User
 from charity_app.forms import SignUpForm
 
 
-"""remove username in USER!? 
+"""
+add messages to  form in template!
+remove username in USER!? 
 https://docs.djangoproject.com/en/2.0/topics/auth/customizing/"""
 
 class LandingPage(ListView):
@@ -130,12 +132,8 @@ def logout_view(request):
 class Register(SuccessMessageMixin, CreateView):
     form_class = SignUpForm
     # model = User
-    success_url = reverse_lazy('templates/login.html')
+    success_url = reverse_lazy('login')
     template_name = 'register.html'
     success_message = "Your profile was created successfully"
 
 
-    # def form_valid(self, form):
-    #     form.save()
-    #     messages.success('form is valid')
-    #     return super(Register, self).form_valid(form)

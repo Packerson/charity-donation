@@ -17,6 +17,7 @@ from charity_app.forms import SignUpForm
 
 """
 add messages to  form in template!
+pagination
 """
 
 class LandingPage(ListView):
@@ -130,7 +131,7 @@ def logout_view(request):
     return redirect("Landing_page")
 
 
-class Register(SuccessMessageMixin, CreateView):
+class Register(CreateView):
     form_class = SignUpForm
     # model = User
     success_url = reverse_lazy('login')

@@ -21,31 +21,29 @@
         {% csrf_token %}
         <div class="form-group">
             {{ form.email }}
-          {{form.email.errors}}
+<!--          {{form.email.errors}}-->
 
           </div>
         <div class="form-group">
             {{ form.password1 }}
-          {{form.email.password1}}
+<!--          {{ form.password1.errors }}-->
           </div>
         <div class="form-group">
             {{ form.password2 }}
-          {{form.email.password2}}
-
-<!--          {{form.error_messages}}-->
+<!--          {{ form.password2.errors }}-->
         </div>
-<!--          {% if form.error_messages %}-->
-<!--          {% for message in form.error_messages %}-->
-<!--                {{ message }}-->
-<!--                {% endfor %}-->
-<!--          {% endif %}-->
 
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    {{ error|escape }}
+                {% endfor %}
+            {% endif %}
 
-
-<!--          <div class="form-group" >-->
-<!--            {{ form.error_messages }}-->
-<!--        </div>-->
-<!--          {{form.as_p}}-->
 
 
 

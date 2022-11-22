@@ -3,12 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 
-#
-# Sign Up Form
+
 class SignUpForm(UserCreationForm):
-    # error_messages = {
-    #     'password_mismatch': "my message",
-    # }
 
     class Meta:
         model = User

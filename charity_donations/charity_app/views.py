@@ -105,6 +105,14 @@ class AddDonation(CreateView):
     fields = '__all__'
     template_name = 'form.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(AddDonation, self).get_context_data(**kwargs)
+        categories = Category.objects.all()
+        institutions = Institution.objects.all()
+        context['categories'] = categories
+        context['institutions'] = institutions
+        return context
+
 
 def login_view(request):
     """login view"""
@@ -114,8 +122,6 @@ def login_view(request):
         email = request.POST["email"]
         password = request.POST["password"]
         user = authenticate(username=email, password=password)
-        if not user:
-            return redirect("Register")
         if user:
             login(request, user)
             messages.success(request, "Login!")

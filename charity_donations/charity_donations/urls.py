@@ -14,6 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+
+"""login_required redirect to login"""
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from charity_app.views import LandingPage, AddDonation, login_view, \
@@ -24,7 +27,7 @@ urlpatterns = [
     path('', LandingPage.as_view(), name='Landing_page'),
     path('login/', login_view, name='login'),
     path('logout', logout_view, name='logout'),
-    path('adddonation/', AddDonation.as_view(), name='Add_donation'),
+    path('adddonation/', login_required(AddDonation.as_view()), name='Add_donation'),
     path('register/', Register.as_view(), name='Register'),
 
 ]

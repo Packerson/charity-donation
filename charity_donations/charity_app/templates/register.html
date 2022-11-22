@@ -17,23 +17,28 @@
       <h2>Załóż konto</h2>
 
         <form method="POST" >
-      {{success_message}}
+
         {% csrf_token %}
         <div class="form-group">
             {{ form.email }}
+          {{form.email.errors}}
 
           </div>
         <div class="form-group">
             {{ form.password1 }}
+          {{form.email.password1}}
           </div>
         <div class="form-group">
             {{ form.password2 }}
+          {{form.email.password2}}
+
+<!--          {{form.error_messages}}-->
         </div>
-          {% if form.error_messages %}
-          {% for message in form.error_messages %}
-                {{ message }}
-                {% endfor %}
-          {% endif %}
+<!--          {% if form.error_messages %}-->
+<!--          {% for message in form.error_messages %}-->
+<!--                {{ message }}-->
+<!--                {% endfor %}-->
+<!--          {% endif %}-->
 
 
 

@@ -16,7 +16,7 @@ from charity_app.forms import SignUpForm
 
 
 """
-add messages to  form in template!
+Javascript compare categories with Institutions
 pagination
 """
 

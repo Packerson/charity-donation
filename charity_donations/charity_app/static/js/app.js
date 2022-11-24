@@ -225,19 +225,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // TODO: Validation
 
-            // let categories = document.querySelectorAll('[data-step="1"]')
-            // console.log(categories)
 
-            let institutions = document.querySelectorAll('[data-step="3"]')
-            console.log(institutions)
+            let categoriesArray = Array.from(document.getElementsByClassName('js-categories-input'));
 
-            document.getElementById('BTNcategories').onclick = function () {
-                let categories = document.getElementsByName('categories');
-                for (let checkbox of categories) {
-                    if (checkbox.checked)
-                        document.body.append(checkbox.value);
-                }
-            }
+            console.log(categoriesArray)
+
+            let chosenCategories = []
+
+            const buttons = document.getElementById('BTNcategories');
+
+            buttons.addEventListener('click', function () {
+                categoriesArray.forEach(function (element){
+                    element.checked = true;
+                    chosenCategories.push(element)
+                })
+            })
+            console.log(chosenCategories)
+            console.log("sdasd")
+            // let institutions = document.querySelectorAll('[data-step="3"]')
+            // console.log(institutions)
+            //
+            // document.getElementById('BTNcategories').onclick = function () {
+            //     let categories = document.getElementsByName('categories');
+            //     for (let checkbox of categories) {
+            //         if (checkbox.checked)
+            //             document.body.append(checkbox.value);
+            //     }
+            // }
 
 
             this.slides.forEach(slide => {

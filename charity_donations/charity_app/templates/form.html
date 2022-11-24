@@ -77,9 +77,10 @@
           <div data-step="1" class="active">
             <h3>Zaznacz co chcesz oddać:</h3>
                   {% for category in categories %}
-            <div class="form-group form-group--checkbox">
+            <div class="form-group form-group--checkbox ">
               <label>
                 <input
+                        class="js-categories-input"
                   type="checkbox"
                   name="categories"
                   value="{{ category.id }}"
@@ -94,7 +95,7 @@
 
             <div class="form-group form-group--checkbox">
               <label>
-                <input type="checkbox" name="categories" value="other" />
+                <input type="checkbox"  class="js-categories-input" name="categories" value="other" />
                 <span class="checkbox"></span>
                 <span class="description">inne</span>
               </label>

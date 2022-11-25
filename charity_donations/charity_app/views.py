@@ -1,18 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.messages.views import SuccessMessageMixin
-from django.core.paginator import Paginator
-from django.core.paginator import EmptyPage
-from django.core.paginator import PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views import generic, View
-from django.views.generic import ListView
-from django.views.generic.edit import CreateView, FormView
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView
 
-from charity_app.models import Donation, Institution, Category, User
 from charity_app.forms import SignUpForm
+from charity_app.models import Donation, Institution, Category
+from django.contrib.auth.models import User
 
 
 """
@@ -20,12 +15,21 @@ Javascript compare categories with Institutions
 pagination
 """
 
+"""
+superuser:
+admin
+admin@admin.com
+qazWSXedc123
+"""
+"""edcwsxqaz321"""
+
 class LandingPage(ListView):
     model = Institution
     template_name = "index.html"
     # paginate_by = 4
 
     """count bags and institutions"""
+
     @staticmethod
     def count_bags_and_donated_institutions():
         donations = Donation.objects.all()
@@ -143,5 +147,12 @@ class Register(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'register.html'
     success_message = "Your profile was created successfully"
+
+
+class UserProfile(DetailView):
+
+    model = User
+    template_name = 'user_profile.html'
+
 
 

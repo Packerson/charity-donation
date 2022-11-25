@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-
+from django.urls import reverse
+from django.utils.text import slugify
 
 
 class SignUpForm(UserCreationForm):
@@ -14,6 +15,7 @@ class SignUpForm(UserCreationForm):
         """fields and attributes"""
         super(SignUpForm, self).__init__(*args, **kwargs)
 
+        # self.slug = forms.SlugField(null=True, unique=True)
         self.fields['email'].widget.attrs = {'class': 'form-group', 'placeholder': 'Email'}
         self.fields['password1'].widget.attrs = {'class': 'form-group', 'placeholder': 'Hasło'}
         self.fields['password2'].widget.attrs = {'class': 'form-group', 'placeholder': 'Powtórz hasło'}
@@ -21,7 +23,11 @@ class SignUpForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data['email']
         return email
-        
+
+    def slug_generic(self):
+        slug = slugify(self.clean_email())
+        return slug
+
     def save(self, commit=True):
         """need to rewrite username"""
         self.instance.username = self.clean_email()

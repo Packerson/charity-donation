@@ -29,5 +29,5 @@ urlpatterns = [
     path('logout', logout_view, name='logout'),
     path('adddonation/', login_required(AddDonation.as_view()), name='Add_donation'),
     path('register/', Register.as_view(), name='Register'),
-    path('profile/<slug:slug>/', UserProfile.as_view(), name='User_profile')
+    path('profile/<int:pk>/', UserProfile.as_view(), name='User_profile')
 ]

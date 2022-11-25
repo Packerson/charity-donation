@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<body>
+{% block content %}
+                <div class="slogan container container--90">
+                    <div class="slogan--item">
+                      <h1>
+                       DANE: <br>
+                          {{object.email}} <br>
+                            {{object.username}}<br>
 
-{{ user.email }}
+                      </h1>
+
+
+
+
+
+                    </div>
+                  </div>
+            </header>
+
+{% endblock %}
+</body>

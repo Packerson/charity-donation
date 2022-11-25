@@ -11,6 +11,9 @@ from django.contrib.auth.models import User
 
 
 """
+
+SLUG profile
+
 Javascript compare categories with Institutions
 pagination
 """

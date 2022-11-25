@@ -26,7 +26,7 @@ class SignUpForm(UserCreationForm):
 
     def slug_generic(self):
         slug = slugify(self.clean_email())
-        return slug
+        return reverse('User_profile', kwargs={"slug": self.clean_email()})
 
     def save(self, commit=True):
         """need to rewrite username"""

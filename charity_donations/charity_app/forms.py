@@ -15,7 +15,7 @@ class SignUpForm(UserCreationForm):
         """fields and attributes"""
         super(SignUpForm, self).__init__(*args, **kwargs)
 
-        # self.slug = forms.SlugField(null=True, unique=True)
+
         self.fields['email'].widget.attrs = {'class': 'form-group', 'placeholder': 'Email'}
         self.fields['password1'].widget.attrs = {'class': 'form-group', 'placeholder': 'Hasło'}
         self.fields['password2'].widget.attrs = {'class': 'form-group', 'placeholder': 'Powtórz hasło'}

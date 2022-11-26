@@ -1,5 +1,38 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<body>
+{% block content %}
 
-{{ user.email }}
+{% if user.is_authenticated %}
+    {% if user.id == user_id %}
+
+
+        <div class="slogan container container--90">
+            <div class="slogan--item">
+              <h1>
+                Dane użytkownika<br />
+
+              </h1>
+                 <div class="slogan--steps">
+                    <div class="slogan--steps-title">
+                            <span class="description">Username: {{user.username}}</span> <br>
+                            <span class="description">Email : {{user.email}}</span>       <br>
+                            <span class="description">Data joined : {{user.date_joined}}</span> </br>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </header>
+
+    {% else %}
+        You are not the correct user
+    {% endif %}
+
+{% else %}
+    You are not allowed here
+
+
+{% endif %}
+{% endblock %}
+</body>

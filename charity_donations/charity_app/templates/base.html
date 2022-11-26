@@ -21,7 +21,7 @@
                             <li class="logged-user">
                                 Witaj {{ user.username }}
                                 <ul class="dropdown">
-                                    <li><a href="{% url 'User_profile' slug=user.slug_generic %}">Profil</a></li>
+                                    <li><a href="{% url 'User_profile'  %}">Profil</a></li>
 
                                     <li><a href="#">Moje zbiórki</a></li>
                                     <li><a href="{% url 'logout' %}">Wyloguj</a></li>

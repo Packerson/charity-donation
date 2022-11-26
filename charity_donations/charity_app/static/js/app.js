@@ -227,21 +227,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             let categoriesArray = Array.from(document.getElementsByClassName('js-categories-input'));
-
+            let institutionsCategoryArray = Array.from(document.getElementsByClassName('js-organisation-categories'))
             console.log(categoriesArray)
+            console.log(institutionsCategoryArray)
+            const chosenCategories = []
 
-            let chosenCategories = []
 
-            const buttons = document.getElementById('BTNcategories');
+            const buttons = document.getElementsByClassName('js-categories-btn');
 
-            buttons.addEventListener('click', function () {
-                categoriesArray.forEach(function (element){
-                    element.checked = true;
-                    chosenCategories.push(element)
-                })
+            categoriesArray.forEach(function ( element){
+                element.addEventListener('click', function (){
+
+                    if (element.checked){
+                        console.log(element)
+                        chosenCategories.push(element)
+                        console.log(chosenCategories)
+                }})})
+
+            chosenCategories.forEach(function (element){
+                if (!element  in institutionsCategoryArray){
+                    element.innerText = 'hidden'
+                    console.log(element)
+                }
             })
-            console.log(chosenCategories)
-            console.log("sdasd")
+
+
             // let institutions = document.querySelectorAll('[data-step="3"]')
             // console.log(institutions)
             //

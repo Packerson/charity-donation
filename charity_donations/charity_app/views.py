@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView
 
@@ -152,10 +153,11 @@ class Register(CreateView):
     success_message = "Your profile was created successfully"
 
 
-class UserProfile(DetailView):
-
-    model = User
-    template_name = 'user_profile.html'
+class UserProfile(View):
+    def get(self, request):
+        user_id = request.user.id
+        context = {'user_id': user_id}
+        return render(request, 'user_profile.html', context)
 
 
 

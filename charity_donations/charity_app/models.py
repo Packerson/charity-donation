@@ -1,8 +1,9 @@
 """Import base built in django model USER"""
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.db import models
 
-User = get_user_model()
+
 
 
 class Category(models.Model):
@@ -41,3 +42,7 @@ class Donation(models.Model):
     pick_up_time = models.TimeField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True,
                              default=True)
+
+
+class Users(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)

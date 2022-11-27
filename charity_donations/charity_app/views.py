@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 
 SLUG profile
 
+try data! in js
 Javascript compare categories with Institutions
 pagination
 """
@@ -113,12 +114,32 @@ class AddDonation(CreateView):
     fields = '__all__'
     template_name = 'form.html'
 
+    @staticmethod
+    def institutions_categories_method():
+        institutions = Institution.objects.all()
+        institutions_categories = []
+        categories = []
+
+        for institution in institutions:
+            for category in institution.categories.all():
+                categories.append(category.id)
+
+            institutions_categories.append(str(categories))
+            categories = []
+
+        print(len(institutions_categories))
+        return institutions_categories
+
     def get_context_data(self, **kwargs):
         context = super(AddDonation, self).get_context_data(**kwargs)
         categories = Category.objects.all()
         institutions = Institution.objects.all()
         context['categories'] = categories
-        context['institutions'] = institutions
+
+        institutions_data = zip(institutions, self.institutions_categories_method())
+
+        context['institutions'] = institutions_data
+
         return context
 
 

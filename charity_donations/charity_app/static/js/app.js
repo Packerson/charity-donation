@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // TODO: Validation
 
-
+            // step 3 validate data
             let categoriesArray = Array.from(document.getElementsByClassName('js-categories-input'));
             let institutionsCategoryArray = Array.from(document.getElementsByClassName('js-organisation-categories'))
             console.log(categoriesArray)
@@ -235,33 +235,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const buttons = document.getElementsByClassName('js-categories-btn');
 
+            // download checked categories
             categoriesArray.forEach(function ( element){
                 element.addEventListener('click', function (){
 
                     if (element.checked){
-                        console.log(element)
+                        console.log(element.dataset.id)
+                        console.log(element.value)
                         chosenCategories.push(element)
                         console.log(chosenCategories)
                 }})})
 
-            chosenCategories.forEach(function (element){
-                if (!element  in institutionsCategoryArray){
-                    element.innerText = 'hidden'
-                    console.log(element)
-                }
-            })
+            // compare checked categories with institutions
 
 
-            // let institutions = document.querySelectorAll('[data-step="3"]')
-            // console.log(institutions)
-            //
-            // document.getElementById('BTNcategories').onclick = function () {
-            //     let categories = document.getElementsByName('categories');
-            //     for (let checkbox of categories) {
-            //         if (checkbox.checked)
-            //             document.body.append(checkbox.value);
-            //     }
-            // }
+            buttons[1].addEventListener('click', function () {
+                for (const category_id of chosenCategories){
+                    for (const institution_categories_id of institutionsCategoryArray){
+                        if (!institution_categories_id.dataset.id.includes(category_id.dataset.id)  ){
+                            console.log(institution_categories_id.dataset.id, category_id.dataset.id)
+                            institution_categories_id.remove()
+                        }
+                    }
+                }})
+
 
 
             this.slides.forEach(slide => {
@@ -275,7 +272,13 @@ document.addEventListener("DOMContentLoaded", function () {
             this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
             this.$step.parentElement.hidden = this.currentStep >= 6;
 
+
             // TODO: get data from inputs and show them in summary
+
+            const bags_amount = document.getElementById('bags').value;
+            console.log(bags_amount)
+            const bags_summary = document.querySelector('[data-bags="data-bags"]')
+            bags_summary.innerText= bags_amount
         }
 
         /**

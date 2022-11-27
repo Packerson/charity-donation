@@ -1,22 +1,21 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 
 from charity_app.forms import SignUpForm
 from charity_app.models import Donation, Institution, Category
-from django.contrib.auth.models import User
-
 
 """
 
 SLUG profile
 
-try data! in js
-Javascript compare categories with Institutions
+try data! in js 
+CreateView -- create form!
+js do wymiany! Uncaught TypeError: chosenCategories[0] is undefined
 pagination
 """
 
@@ -27,6 +26,7 @@ admin@admin.com
 qazWSXedc123
 """
 """edcwsxqaz321"""
+
 
 class LandingPage(ListView):
     model = Institution
@@ -111,8 +111,11 @@ class LandingPage(ListView):
 
 class AddDonation(CreateView):
     model = Donation
-    fields = '__all__'
+    fields = ['quantity', 'categories', 'institution', 'address',
+              'phone_number', 'city', 'zip_code',
+              'pick_up_date', 'pick_up_time', 'user']
     template_name = 'form.html'
+    success_url = reverse_lazy('Confirmation')
 
     @staticmethod
     def institutions_categories_method():
@@ -141,6 +144,10 @@ class AddDonation(CreateView):
         context['institutions'] = institutions_data
 
         return context
+
+
+def confirmation_view(request):
+    return render(request, 'form-confirmation.html')
 
 
 def login_view(request):
@@ -179,6 +186,3 @@ class UserProfile(View):
         user_id = request.user.id
         context = {'user_id': user_id}
         return render(request, 'user_profile.html', context)
-
-
-

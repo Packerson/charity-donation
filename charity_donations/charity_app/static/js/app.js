@@ -306,11 +306,7 @@ document.addEventListener("DOMContentLoaded", function () {
             address_table[1].innerHTML = document.getElementById('city').value
             address_table[2].innerHTML = document.getElementById('postcode').value
             address_table[3].innerHTML = document.getElementById('phone').value
-
-
                                                            })
-
-
         }
 
         /**
@@ -318,6 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
          *
          * TODO: validation, send data to server
          */
+
         submit(e) {
             e.preventDefault();
             this.currentStep++;

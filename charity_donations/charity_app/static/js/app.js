@@ -228,36 +228,38 @@ document.addEventListener("DOMContentLoaded", function () {
             // step 3 validate data
             let categoriesArray = Array.from(document.getElementsByClassName('js-categories-input'));
             let institutionsCategoryArray = Array.from(document.getElementsByClassName('js-organisation-categories'))
-            console.log(categoriesArray)
-            console.log(institutionsCategoryArray)
             const chosenCategories = []
-
-
             const buttons = document.getElementsByClassName('js-categories-btn');
 
             // download checked categories
             categoriesArray.forEach(function ( element){
                 element.addEventListener('click', function (){
-
                     if (element.checked){
-                        console.log(element.dataset.id)
-                        console.log(element.value)
                         chosenCategories.push(element)
-                        console.log(chosenCategories)
                 }})})
 
             // compare checked categories with institutions
-
 
             buttons[1].addEventListener('click', function () {
                 for (const category_id of chosenCategories){
                     for (const institution_categories_id of institutionsCategoryArray){
                         if (!institution_categories_id.dataset.id.includes(category_id.dataset.id)  ){
-                            console.log(institution_categories_id.dataset.id, category_id.dataset.id)
+                            // console.log(institution_categories_id.dataset.id, category_id.dataset.id)
                             institution_categories_id.remove()
                         }
                     }
-                }})
+                }
+
+            })
+
+            // checked institutions
+
+            let institution_chosen = ""
+            buttons[2].addEventListener('click', function (){
+                institution_chosen = document.querySelector('input[name="organization"]:checked').value;
+                console.log(institution_chosen)
+                })
+
 
 
 
@@ -275,10 +277,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // TODO: get data from inputs and show them in summary
 
+            buttons[3].addEventListener('click', function (){
+
             const bags_amount = document.getElementById('bags').value;
-            console.log(bags_amount)
             const bags_summary = document.querySelector('[data-bags="data-bags"]')
-            bags_summary.innerText= bags_amount
+            bags_summary.innerText= bags_amount + " worki " + chosenCategories[0].value
+
+            const organisation_summary = document.querySelector('[data-organisation="data-organisation"]')
+            console.log(institution_chosen)
+            organisation_summary.innerText = institution_chosen
+            // const address = document.getElementById('address').value
+            // const city = document.getElementById('city').value
+            // const postcode = document.getElementById('postcode').value
+            // const phone = document.getElementById('phone').value
+            // const data = document.getElementById('data').value
+            // const time = document.getElementById('time').value
+            // const more_info = document.getElementById('more_info').value
+
+            const date_table = document.getElementById("date_table").children
+            const address_table = document.getElementById("address_table").children
+
+            date_table[0].innerHTML = document.getElementById('data').value
+            date_table[1].innerHTML = document.getElementById('time').value
+            date_table[2].innerHTML = document.getElementById('more_info').value
+
+            console.log(chosenCategories)
+            address_table[0].innerHTML = document.getElementById('address').value
+            address_table[1].innerHTML = document.getElementById('city').value
+            address_table[2].innerHTML = document.getElementById('postcode').value
+            address_table[3].innerHTML = document.getElementById('phone').value
+
+
+                                                           })
+
+
         }
 
         /**

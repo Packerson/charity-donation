@@ -71,7 +71,9 @@
                         class="js-categories-input"
                   type="checkbox"
                   name="categories"
-                  value="{{ category.id }}"
+                  value="{{ category.name }}"
+                        data-id = "{{ category.id }}"
+                        data-categories = "{{ category.name }}"
                 />
                 <span class="checkbox"></span>
                 <span class="description"
@@ -83,7 +85,11 @@
 
             <div class="form-group form-group--checkbox">
               <label>
-                <input type="checkbox"  class="js-categories-input" name="categories" value="other" />
+                <input type="checkbox"
+                       class="js-categories-input"
+                       name="categories"
+                       value="other"
+                        data-id = ""/>
                 <span class="checkbox"></span>
                 <span class="description">inne</span>
               </label>
@@ -101,25 +107,25 @@
             <div class="form-group form-group--inline">
               <label>
                 Liczba 60l worków:
-                <input type="number" name="bags" step="1" min="1" />
+                <input type="number" id="bags" name="bags" step="1" min="1" />
               </label>
             </div>
 
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="button" class="btn next-step">Dalej</button>
+              <button type="button" class="js-categories-btn btn next-step">Dalej</button>
             </div>
           </div>
 
 
 
-          <!-- STEP 4 -->
+          <!-- STEP 3 -->
           <div data-step="3">
             <h3>Wybierz organizacje, której chcesz pomóc:</h3>
 
-                {% for institution in institutions %}
+                {% for institution, categories_id in institutions %}
 
-            <div  class="form-group form-group--checkbox">
+            <div  class="form-group form-group--checkbox js-organisation-categories"  data-id="{{ categories_id }}">
 
               <label>
 
@@ -129,13 +135,11 @@
 
                 <span class="checkbox radio "></span>
                 <span  class="description">
-                  <div class="title">"{{ institution.name }}”</div>
-                  <label class="js-organisation-categories">
-                {% for category in institution.categories.all %}
+                  <div class="title" data-institutions="institutions">"{{ institution.name }} {{categories_id}}”</div>
 
-                  <input type="number" name="institutions_categories" value={{ category.id }}/>
-                   {% endfor %}
-                </label>
+
+
+
                   <div class="subtitle">
                     Cel i misja: {{ institution.description }}
 
@@ -148,11 +152,11 @@
 
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="button" class="btn next-step">Dalej</button>
+              <button type="button" class="js-categories-btn btn next-step">Dalej</button>
             </div>
           </div>
 
-          <!-- STEP 5 -->
+          <!-- STEP 4 -->
           <div data-step="4">
             <h3>Podaj adres oraz termin odbioru rzecz przez kuriera:</h3>
 
@@ -200,11 +204,11 @@
             </div>
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="button" class="btn next-step">Dalej</button>
+              <button type="button" class="js-categories-btn btn next-step">Dalej</button>
             </div>
           </div>
 
-          <!-- STEP 6 -->
+          <!-- STEP 5 -->
           <div data-step="5">
             <h3>Podsumowanie Twojej darowizny</h3>
 
@@ -214,7 +218,7 @@
                 <ul>
                   <li>
                     <span class="icon icon-bag"></span>
-                    <span class="summary--text"
+                    <span class="summary--text " data-bags="data-bags"
                       >4 worki ubrań w dobrym stanie dla dzieci</span
                     >
                   </li>
@@ -252,7 +256,7 @@
 
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="submit" class="btn">Potwierdzam</button>
+              <button type="submit" class="js-categories-btn btn">Potwierdzam</button>
             </div>
           </div>
         </form>

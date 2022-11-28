@@ -60,7 +60,8 @@
       <div class="form--steps-container">
         <div class="form--steps-counter">Krok <span>1</span>/5</div>
 
-        <form action="form-confirmation.html" method="post">
+        <form  method="post">
+          {% csrf_token %}
           <!-- STEP 1: class .active is switching steps -->
           <div data-step="1" class="active">
             <h3>Zaznacz co chcesz oddać:</h3>
@@ -219,14 +220,14 @@
                   <li>
                     <span class="icon icon-bag"></span>
                     <span class="summary--text " data-bags="data-bags"
-                      >4 worki ubrań w dobrym stanie dla dzieci</span
+                      >{{form.quantity}} {{form.categories}}</span
                     >
                   </li>
 
                   <li>
                     <span class="icon icon-hand"></span>
                     <span class="summary--text" data-organisation="data-organisation"
-                      >Dla fundacji "Mam marzenie" w Warszawie</span
+                      >{{form.institution}}</span
                     >
                   </li>
                 </ul>
@@ -236,18 +237,18 @@
                 <div class="form-section--column">
                   <h4>Adres odbioru:</h4>
                   <ul id="address_table">
-                    <li>Prosta 51</li>
-                    <li>Warszawa</li>
-                    <li>99-098</li>
-                    <li>123 456 789</li>
+                    <li> {{form.address}}</li>
+                    <li>{{form.city}}</li>
+                    <li>{{form.zip_code}}</li>
+                    <li>{{form.phone_number}}</li>
                   </ul>
                 </div>
 
                 <div class="form-section--column">
                   <h4>Termin odbioru:</h4>
                   <ul id="date_table">
-                    <li>13/12/2018</li>
-                    <li>15:40</li>
+                    <li>{{form.pick_up_date}}</li>
+                    <li>{{form.pick_up_time}}</li>
                     <li>Brak uwag</li>
                   </ul>
                 </div>
@@ -256,7 +257,7 @@
 
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="submit" class="js-categories-btn btn">Potwierdzam</button>
+              <button type="submit"  class="js-categories-btn btn">Potwierdzam</button>
             </div>
           </div>
         </form>

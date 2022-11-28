@@ -30,6 +30,6 @@ urlpatterns = [
     path('logout', logout_view, name='logout'),
     path('adddonation/', login_required(AddDonation.as_view()), name='Add_donation'),
     path('register/', Register.as_view(), name='Register'),
-    path('profile/', login_required(UserProfile.as_view()), name='User_profile'),
+    path('profile/', UserProfile.as_view(), name='User_profile'),
     path('confirmation/', confirmation_view, name='Confirmation')
 ]

@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
+
 <body>
 {% block content %}
 
@@ -22,8 +24,52 @@
                     </div>
                  </div>
             </div>
+
+
         </div>
     </header>
+
+
+    <section id="steps" class="steps">
+      <h2>Darowizny</h2>
+
+
+
+{% for donation in object_list %}
+                 <table class="tg">
+
+                    <thead>
+                      <tr>
+                        <th class="tg-6ywj">ID</th>
+                        <th class="tg-6ywj">Quantity</th>
+                        <th class="tg-6ywj">Categories</th>
+                        <th class="tg-6ywj">Institution</th>
+                        <th class="tg-6ywj">Pick_up_date</th>
+                        <th class="tg-6ywj">Pick_up_time</th>
+                        <th class="tg-7cam">Is taken</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="tg-6ywj">{{donation.id}}</td>
+                        <td class="tg-6ywj">{{donation.quantity}}</td>
+                        <td class="tg-6ywj">{{donation.categories.name}}</td>
+                        <td class="tg-6ywj">{{donation.institution}}</td>
+                        <td class="tg-6ywj">{{donation.pick_up_date}}</td>
+                        <td class="tg-6ywj">{{donation.pick_up_time}}</td>
+                        <td class="tg-6ywj">nothing</td>
+
+                      </tr>
+                    </tbody>
+                    </table>
+                 {% empty %}
+                 <span class="description">No donation yet.</span> <br>
+                 {% endfor %}
+
+
+
+
+    </section>
 
     {% else %}
         You are not the correct user

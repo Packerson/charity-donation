@@ -13,10 +13,14 @@ from charity_app.models import Donation, Institution, Category
 
 """
 
-SLUG profile
+w formularzu te same nazwy co pola
+przycisk submit nie działa, pobrać go do js i zrobić submit
+
+pobrać user.id z requesta i przesłać go do zapisu 
+
 
 try data! in js 
-CreateView -- create form!
+
 js do wymiany! Uncaught TypeError: chosenCategories[0] is undefined
 pagination
 """
@@ -184,18 +188,20 @@ class Register(CreateView):
 
 
 class UserProfile(LoginRequiredMixin, ListView):
-    
+
     template_name = 'user_profile.html'
     model = Donation
 
     def get_queryset(self):
+        # queryset = Donation.objects.all()
         queryset = Donation.objects.filter(user_id=self.request.user).order_by('-pick_up_date')
         return queryset
-    def get_context_data(self, *, object_list=None, **kwargs):
+
+    def get_context_data(self, object_list=None, **kwargs):
 
         context = super(UserProfile, self).get_context_data(**kwargs)
-        # user_id = self.request.user.id
-        # context['user_id'] = user_id
+        user_id = self.request.user.id
+        context['user_id'] = user_id
         return context
 
 

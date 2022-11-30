@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+<body>
+{% block content %}
+
+{% if user.is_authenticated %}
+    {% if user.id == user_id %}
+
+
+        <div class="slogan container container--90">
+            <div class="slogan--item">
+            <h2>Darowizny</h2>
+
+
+                <div class="slogan--steps">
+{% for donation in object_list %}
+                 <table class="tg">
+
+                    <thead>
+                      <tr>
+                        <th class="tg-6ywj">ID</th>
+                        <th class="tg-6ywj">Quantity</th>
+                        <th class="tg-6ywj">Categories</th>
+                        <th class="tg-6ywj">Institution</th>
+                        <th class="tg-6ywj">Pick_up_date</th>
+                        <th class="tg-6ywj">Pick_up_time</th>
+                        <th class="tg-7cam">Is taken</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="tg-6ywj">{{donation.id}}</td>
+                        <td class="tg-6ywj">{{donation.quantity}}</td>
+                          {% for category in donation.categories.all %}
+                        <td class="tg-6ywj">{{category}}</td>
+                          {% endfor %}
+                        <td class="tg-6ywj">{{donation.institution}}</td>
+                        <td class="tg-6ywj">{{donation.pick_up_date}}</td>
+                        <td class="tg-6ywj">{{donation.pick_up_time}}</td>
+                        <td class="tg-6ywj">nothing</td>
+
+                      </tr>
+                    </tbody>
+                    </table>
+                 {% empty %}
+                 <span class="description">No donation yet.</span> <br>
+                 {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    {% else %}
+        You are not the correct user
+    {% endif %}
+
+{% else %}
+    You are not allowed here
+
+
+{% endif %}
+{% endblock %}
+</body>

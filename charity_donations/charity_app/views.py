@@ -1,10 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
-from django.template.context_processors import request
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 
@@ -187,8 +184,7 @@ class Register(CreateView):
     success_message = "Your profile was created successfully"
 
 
-class UserProfile(LoginRequiredMixin, ListView):
-
+class UserProfile(ListView):
     template_name = 'user_profile.html'
     model = Donation
 
@@ -198,12 +194,23 @@ class UserProfile(LoginRequiredMixin, ListView):
         return queryset
 
     def get_context_data(self, object_list=None, **kwargs):
-
         context = super(UserProfile, self).get_context_data(**kwargs)
         user_id = self.request.user.id
         context['user_id'] = user_id
         return context
 
 
+class MyDonation(ListView):
+    template_name = 'my_donation.html'
+    model = Donation
 
+    def get_queryset(self):
+        # queryset = Donation.objects.all()
+        queryset = Donation.objects.filter(user_id=self.request.user).order_by('-pick_up_date')
+        return queryset
 
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super(MyDonation, self).get_context_data(**kwargs)
+        user_id = self.request.user.id
+        context['user_id'] = user_id
+        return context

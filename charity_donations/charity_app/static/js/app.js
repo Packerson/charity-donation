@@ -228,37 +228,21 @@ document.addEventListener("DOMContentLoaded", function () {
             // step 3 validate data
             let categoriesArray = Array.from(document.getElementsByClassName('js-categories-input'));
             let institutionsCategoryArray = Array.from(document.getElementsByClassName('js-organisation-categories'))
-            const chosenCategories = []
+
             const buttons = document.getElementsByClassName('js-categories-btn');
 
-            // download checked categories
-            categoriesArray.forEach(function ( element){
-                element.addEventListener('click', function (){
-                    if (element.checked){
-                        chosenCategories.push(element)
-                }})})
+            // download checked category with category.id in data-set
 
-            // compare checked categories with institutions
+
+            // compare checked category with institutions
 
             buttons[1].addEventListener('click', function () {
-                for (const category_id of chosenCategories){
-                    for (const institution_categories_id of institutionsCategoryArray){
-                        if (!institution_categories_id.dataset.id.includes(category_id.dataset.id)  ){
-                            // console.log(institution_categories_id.dataset.id, category_id.dataset.id)
-                            institution_categories_id.remove()
-                        }
-                    }
-                }
-
-            })
-
-            // checked institutions
-
-            let institution_chosen = ""
-            buttons[2].addEventListener('click', function (){
-                institution_chosen = document.querySelector('input[name="organization"]:checked').value;
-                console.log(institution_chosen)
-                })
+                categoriesArray.forEach(function ( category){
+                    if (category.checked) {
+                        institutionsCategoryArray.forEach(function (element){
+                            if (!element.dataset.id.includes (category.dataset.id)) {
+                                element.remove()
+                        }})}})})
 
 
 
@@ -279,33 +263,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
             buttons[3].addEventListener('click', function (){
 
-            const bags_amount = document.getElementById('bags').value;
-            const bags_summary = document.querySelector('[data-bags="data-bags"]')
-            bags_summary.innerText= bags_amount + " worki " + chosenCategories[0].value
+                const bags_amount = document.getElementById('bags').value;
+                const bags_summary = document.querySelector('[data-bags="data-bags"]')
 
-            const organisation_summary = document.querySelector('[data-organisation="data-organisation"]')
-            console.log(institution_chosen)
-            organisation_summary.innerText = institution_chosen
-            // const address = document.getElementById('address').value
-            // const city = document.getElementById('city').value
-            // const postcode = document.getElementById('postcode').value
-            // const phone = document.getElementById('phone').value
-            // const data = document.getElementById('data').value
-            // const time = document.getElementById('time').value
-            // const more_info = document.getElementById('more_info').value
+                let chosenCategory = document.querySelector('input[name="categories"]:checked')
+                console.log(chosenCategory)
+                console.log(chosenCategory)
+                bags_summary.innerText= bags_amount + " worki " + chosenCategory.value
 
-            const date_table = document.getElementById("date_table").children
-            const address_table = document.getElementById("address_table").children
+                const institution_summary = document.querySelector('[data-organisation="data-organisation"]')
+                let institution_chosen = document.querySelector('input[name="institution"]:checked')
+                institution_summary.innerText = institution_chosen.value
 
-            date_table[0].innerHTML = document.getElementById('data').value
-            date_table[1].innerHTML = document.getElementById('time').value
-            date_table[2].innerHTML = document.getElementById('more_info').value
+                const date_table = document.getElementById("date_table").children
+                const address_table = document.getElementById("address_table").children
 
-            console.log(chosenCategories)
-            address_table[0].innerHTML = document.getElementById('address').value
-            address_table[1].innerHTML = document.getElementById('city').value
-            address_table[2].innerHTML = document.getElementById('postcode').value
-            address_table[3].innerHTML = document.getElementById('phone').value
+                date_table[0].innerHTML = document.getElementById('data').value
+                date_table[1].innerHTML = document.getElementById('time').value
+                date_table[2].innerHTML = document.getElementById('more_info').value
+
+                console.log(chosenCategory)
+                address_table[0].innerHTML = document.getElementById('address').value
+                address_table[1].innerHTML = document.getElementById('city').value
+                address_table[2].innerHTML = document.getElementById('postcode').value
+                address_table[3].innerHTML = document.getElementById('phone').value
                                                            })
         }
 
@@ -314,6 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
          *
          * TODO: validation, send data to server
          */
+
 
         submit(e) {
             e.preventDefault();

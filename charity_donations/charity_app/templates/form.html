@@ -70,7 +70,7 @@
               <label>
                 <input
                         class="js-categories-input"
-                  type="checkbox"
+                  type="radio"
                   name="categories"
                   value="{{ category.name }}"
                         data-id = "{{ category.id }}"
@@ -86,7 +86,7 @@
 
             <div class="form-group form-group--checkbox">
               <label>
-                <input type="checkbox"
+                <input type="radio"
                        class="js-categories-input"
                        name="categories"
                        value="other"
@@ -108,7 +108,7 @@
             <div class="form-group form-group--inline">
               <label>
                 Liczba 60l worków:
-                <input type="number" id="bags" name="bags" step="1" min="1" />
+                <input type="number" id="bags" name="quantity" step="1" min="1" />
               </label>
             </div>
 
@@ -131,7 +131,7 @@
               <label>
 
 
-                <input type="radio" name="organization" value="{{ institution.name }}" />
+                <input type="radio" name="institution" value="{{ institution.name }}" />
 
 
                 <span class="checkbox radio "></span>
@@ -174,13 +174,13 @@
 
                 <div class="form-group form-group--inline">
                   <label>
-                    Kod pocztowy <input id="postcode" type="text" name="postcode" />
+                    Kod pocztowy <input id="postcode" type="text" name="zip_code" />
                   </label>
                 </div>
 
                 <div class="form-group form-group--inline">
                   <label>
-                    Numer telefonu <input id="phone" type="phone"  name="phone" />
+                    Numer telefonu <input id="phone" type="phone"  name="phone_number" />
                   </label>
                 </div>
               </div>
@@ -188,11 +188,11 @@
               <div class="form-section--column">
                 <h4>Termin odbioru</h4>
                 <div class="form-group form-group--inline">
-                  <label> Data <input type="date" name="data" id="data"/> </label>
+                  <label> Data <input type="date" name="pick_up_date" id="data"/> </label>
                 </div>
 
                 <div class="form-group form-group--inline">
-                  <label> Godzina <input type="time" name="time" id="time" /> </label>
+                  <label> Godzina <input type="time" name="pick_up_time" id="time" /> </label>
                 </div>
 
                 <div class="form-group form-group--inline">
@@ -257,7 +257,7 @@
 
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="submit"  class="js-categories-btn btn">Potwierdzam</button>
+              <button type="submit"  class="js-submit-btn js-categories-btn btn">Potwierdzam</button>
             </div>
           </div>
         </form>

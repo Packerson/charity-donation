@@ -188,6 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
         init() {
             this.events();
             this.updateForm();
+            this.saveForm()
         }
 
         /**
@@ -288,6 +289,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 address_table[2].innerHTML = document.getElementById('postcode').value
                 address_table[3].innerHTML = document.getElementById('phone').value
                                                            })
+
+            // const form = document.getElementById('form')
+            // const submit_button = document.getElementsByClassName('js-submit-btn')
+            // submit_button[0].addEventListener('submit', form.submit)
         }
 
         /**
@@ -295,12 +300,33 @@ document.addEventListener("DOMContentLoaded", function () {
          *
          * TODO: validation, send data to server
          */
+        saveForm() {
+//             function logFormSubmit(event){
+//                 console.log('Form submitted! ');
+//                 event.preventDefault();
+//
+// }
+//             const my_form = document.getElementById('form')
+//             my_form.addEventListener('submit', logFormSubmit)
+
+            const my_form = document.getElementById('form')
+            const submit_button = document.getElementsByClassName('js-submit-btn')
+            submit_button[0].addEventListener('click', function (){
+                my_form.requestSubmit()
+                console.log('form submit')
+            })
+        }
+
 
 
         submit(e) {
+            // dodać wyjątek dla konkretnegu buttona tpu submit
             e.preventDefault();
             this.currentStep++;
             this.updateForm();
+            // this.saveForm()
+
+
         }
     }
 

@@ -180,6 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
             this.slides = [...this.$stepInstructions, ...$stepForms];
 
             this.init();
+
         }
 
         /**
@@ -188,7 +189,8 @@ document.addEventListener("DOMContentLoaded", function () {
         init() {
             this.events();
             this.updateForm();
-            this.saveForm()
+
+
         }
 
         /**
@@ -268,8 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const bags_summary = document.querySelector('[data-bags="data-bags"]')
 
                 let chosenCategory = document.querySelector('input[name="categories"]:checked')
-                console.log(chosenCategory)
-                console.log(chosenCategory)
+
                 bags_summary.innerText= bags_amount + " worki " + chosenCategory.value
 
                 const institution_summary = document.querySelector('[data-organisation="data-organisation"]')
@@ -300,31 +301,39 @@ document.addEventListener("DOMContentLoaded", function () {
          *
          * TODO: validation, send data to server
          */
-        saveForm() {
-//             function logFormSubmit(event){
-//                 console.log('Form submitted! ');
-//                 event.preventDefault();
+//         saveForm() {
+// //             function logFormSubmit(event){
+// //                 console.log('Form submitted! ');
+// //                 event.preventDefault();
+// //
+// // }
+// //             const my_form = document.getElementById('form')
+// //             my_form.addEventListener('submit', logFormSubmit)
 //
-// }
 //             const my_form = document.getElementById('form')
-//             my_form.addEventListener('submit', logFormSubmit)
-
-            const my_form = document.getElementById('form')
-            const submit_button = document.getElementsByClassName('js-submit-btn')
-            submit_button[0].addEventListener('click', function (){
-                my_form.requestSubmit()
-                console.log('form submit')
-            })
-        }
+//             const submit_button = document.getElementsByClassName('js-submit-btn')
+//             submit_button[0].addEventListener('click', function (){
+//                 my_form.requestSubmit()
+//                 console.log('form submit')
+//             })
+        // }
 
 
 
         submit(e) {
-            // dodać wyjątek dla konkretnegu buttona tpu submit
-            e.preventDefault();
+            // const my_form = document.getElementById('form')
+            // // dodać wyjątek dla konkretnegu buttona tpu submit
+            // if (this.currentTarget === document.getElementById('button-submit')) {
+            //     console.log("submit")
+            //
+            //     }
+            // else {
+            //     e.preventDefault();
+            // }
+
             this.currentStep++;
             this.updateForm();
-            // this.saveForm()
+
 
 
         }

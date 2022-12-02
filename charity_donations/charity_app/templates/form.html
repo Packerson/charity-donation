@@ -2,7 +2,7 @@
 {% load static %}
 
 
-  <body>
+<body>
 
       {% block nav_bar %}
       {% endblock %}
@@ -72,7 +72,7 @@
                         class="js-categories-input"
                   type="radio"
                   name="categories"
-                  value="{{ category.name }}"
+                  value="{{ category.id }}"
                         data-id = "{{ category.id }}"
                         data-categories = "{{ category.name }}"
                 />
@@ -180,7 +180,7 @@
 
                 <div class="form-group form-group--inline">
                   <label>
-                    Numer telefonu <input id="phone" type="phone"  name="phone_number" />
+                    Numer telefonu <input id="phone" type="number"  name="phone_number" />
                   </label>
                 </div>
               </div>
@@ -254,10 +254,11 @@
                 </div>
               </div>
             </div>
+            <input type="hidden" name="user" value="{{user.id}}">
 
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="submit"  class="js-submit-btn js-categories-btn btn">Potwierdzam</button>
+              <button type="submit" id="button-submit"  class="js-submit-btn js-categories-btn btn">Potwierdzam</button>
             </div>
           </div>
         </form>

@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 
 from charity_app.forms import SignUpForm
 from charity_app.models import Donation, Institution, Category
@@ -188,11 +188,6 @@ class UserProfile(ListView):
     template_name = 'user_profile.html'
     model = Donation
 
-    def get_queryset(self):
-        # queryset = Donation.objects.all()
-        queryset = Donation.objects.filter(user_id=self.request.user).order_by('-pick_up_date')
-        return queryset
-
     def get_context_data(self, object_list=None, **kwargs):
         context = super(UserProfile, self).get_context_data(**kwargs)
         user_id = self.request.user.id
@@ -203,14 +198,32 @@ class UserProfile(ListView):
 class MyDonation(ListView):
     template_name = 'my_donation.html'
     model = Donation
-
+    ordering = ['is_taken', 'pick_up_date']
+    
     def get_queryset(self):
-        # queryset = Donation.objects.all()
-        queryset = Donation.objects.filter(user_id=self.request.user).order_by('-pick_up_date')
+        queryset = Donation.objects.filter(user_id=self.request.user)
         return queryset
+
+    # def get_ordering(self):
+    #     ordering = self.request.GET.get('id')
+    #     return ordering
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super(MyDonation, self).get_context_data(**kwargs)
+        user_id = self.request.user.id
+        context['user_id'] = user_id
+        return context
+
+
+class UpdateDonation(UpdateView):
+
+    model = Donation
+    fields = ('is_taken',)
+    template_name = 'update_donation.html'
+    success_url = reverse_lazy('Donation')
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super(UpdateDonation, self).get_context_data(**kwargs)
         user_id = self.request.user.id
         context['user_id'] = user_id
         return context

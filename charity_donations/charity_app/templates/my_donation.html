@@ -40,7 +40,7 @@
                         <td class="tg-6ywj">{{donation.institution}}</td>
                         <td class="tg-6ywj">{{donation.pick_up_date}}</td>
                         <td class="tg-6ywj">{{donation.pick_up_time}}</td>
-                        <td class="tg-6ywj">{{donation.is_taken}}</td>
+                        <td class="tg-6ywj"><a href="{% url 'Update_donation' pk=donation.id %}">{{donation.is_taken}}</a> </td>
 
                       </tr>
                     </tbody>

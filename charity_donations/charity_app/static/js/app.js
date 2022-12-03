@@ -301,6 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
          *
          * TODO: validation, send data to server
          */
+
 //         saveForm() {
 // //             function logFormSubmit(event){
 // //                 console.log('Form submitted! ');
@@ -321,15 +322,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         submit(e) {
-            // const my_form = document.getElementById('form')
-            // // dodać wyjątek dla konkretnegu buttona tpu submit
-            // if (this.currentTarget === document.getElementById('button-submit')) {
-            //     console.log("submit")
-            //
-            //     }
-            // else {
-            //     e.preventDefault();
-            // }
+            const my_form = document.getElementById('form')
+            // dodać wyjątek dla konkretnegu buttona tpu submit
+            if (this.currentTarget === document.getElementById('button-submit')) {
+                console.log("submit")
+
+                }
+            else {
+                e.preventDefault();
+            }
 
             this.currentStep++;
             this.updateForm();

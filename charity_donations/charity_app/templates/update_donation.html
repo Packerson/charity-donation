@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+<body>
+{% block content %}
+
+{% if user.is_authenticated %}
+    {% if user.id == user_id %}
+
+
+        <div class="slogan container container--90">
+            <div class="slogan--item">
+            <h2>Szczegóły darowizny o numerze {{object.id}}</h2>
+
+                <div class="slogan--steps">
+                     <form method="post">
+                         {% csrf_token %}
+                 <table class="tg">
+
+                    <thead>
+                      <tr>
+
+                        <th class="tg-6ywj">ID</th>
+                        <th class="tg-6ywj">Ilość</th>
+                        <th class="tg-6ywj">Kategoria</th>
+                        <th class="tg-6ywj">Instytucja</th>
+                        <th class="tg-6ywj">Adres</th>
+                        <th class="tg-6ywj">Numer telefonu</th>
+                        <th class="tg-6ywj">Miasto</th>
+                        <th class="tg-6ywj">Kod pocztowy</th>
+                        <th class="tg-6ywj">Data zabrania</th>
+                        <th class="tg-6ywj">Godzina zabrania</th>
+                        <th class="tg-6ywj">Czy dostarczone?</th>
+                        <th class="tg-6ywj">Więcej informacji</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="tg-7cam">{{object.id}}</td>
+                        <td class="tg-7cam">{{object.quantity}}</td>
+                          {% for category in object.categories.all %}
+                        <td class="tg-7cam">{{category}}</td>
+                          {% endfor %}
+                        <td class="tg-7cam">{{object.institution}}</td>
+                        <td class="tg-7cam">{{object.address}}</td>
+                        <td class="tg-7cam">{{object.phone_number}}</td>
+                        <td class="tg-7cam">{{object.city}}</td>
+                        <td class="tg-7cam">{{object.zip_code}}</td>
+                        <td class="tg-7cam">{{object.pick_up_date}}</td>
+                        <td class="tg-7cam">{{object.pick_up_time}}</td>
+                        <td class="tg-7cam">{{form.is_taken}}</td>
+                        <td class="tg-7cam">{{object.more_info}}</td>
+
+                      </tr>
+                    </tbody>
+                    </table>
+                         <button class="btn" type="submit" value="Update">Update</button>
+                          </form>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    {% else %}
+        You are not the correct user
+    {% endif %}
+
+{% else %}
+    You are not allowed here
+
+
+{% endif %}
+{% endblock %}
+</body>

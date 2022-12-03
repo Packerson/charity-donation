@@ -198,32 +198,37 @@ class UserProfile(ListView):
 class MyDonation(ListView):
     template_name = 'my_donation.html'
     model = Donation
-    ordering = ['is_taken', 'pick_up_date']
-    
+    ordering = ['pick_up_date', '-creation_time']
+
     def get_queryset(self):
-        queryset = Donation.objects.filter(user_id=self.request.user)
+        queryset = Donation.objects.filter(user_id=self.request.user).filter(is_taken=False)
         return queryset
 
-    # def get_ordering(self):
-    #     ordering = self.request.GET.get('id')
-    #     return ordering
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super(MyDonation, self).get_context_data(**kwargs)
         user_id = self.request.user.id
         context['user_id'] = user_id
+        context['institutions'] = Donation.objects.filter(user_id=self.request.user).filter(is_taken=True)
         return context
 
 
 class UpdateDonation(UpdateView):
+    """UPDATE IS TAKEN FIELD """
 
     model = Donation
     fields = ('is_taken',)
     template_name = 'update_donation.html'
     success_url = reverse_lazy('Donation')
 
+    """FILTER BY USER.ID TO CHECK OWNER"""
+    def get_queryset(self):
+        queryset = Donation.objects.filter(user_id=self.request.user)
+        return queryset
+
+    """ GET USER ID TO COMPARE AND VALIDATE ACCESS """
     def get_context_data(self, object_list=None, **kwargs):
         context = super(UpdateDonation, self).get_context_data(**kwargs)
-        user_id = self.request.user.id
+        user_id = Donation.objects.filter(user_id=self.request.user).first().user_id
         context['user_id'] = user_id
         return context

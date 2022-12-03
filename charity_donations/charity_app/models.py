@@ -40,7 +40,7 @@ class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True,
                              default=True)
     more_info = models.TextField(null=True)
-    is_taken = models.BooleanField(default=False, null=True)
+    is_taken = models.BooleanField(default=False)
 
 
 class Users(models.Model):

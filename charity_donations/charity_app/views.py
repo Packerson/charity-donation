@@ -4,8 +4,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.models import User
 
-from charity_app.forms import SignUpForm
+from charity_app.forms import SignUpForm, UserSettingsForm
 from charity_app.models import Donation, Institution, Category
 
 """
@@ -178,7 +179,6 @@ def logout_view(request):
 
 class Register(CreateView):
     form_class = SignUpForm
-    # model = User
     success_url = reverse_lazy('login')
     template_name = 'register.html'
     success_message = "Your profile was created successfully"
@@ -203,7 +203,6 @@ class MyDonation(ListView):
     def get_queryset(self):
         queryset = Donation.objects.filter(user_id=self.request.user).filter(is_taken=False)
         return queryset
-
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super(MyDonation, self).get_context_data(**kwargs)
@@ -230,5 +229,19 @@ class UpdateDonation(UpdateView):
     def get_context_data(self, object_list=None, **kwargs):
         context = super(UpdateDonation, self).get_context_data(**kwargs)
         user_id = Donation.objects.filter(user_id=self.request.user).first().user_id
+        context['user_id'] = user_id
+        return context
+
+
+class UserSettings(UpdateView):
+
+    model = User
+    form_class = UserSettingsForm
+    template_name = 'User_settings.html'
+    success_url = reverse_lazy('User_profile')
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super(UserSettings, self).get_context_data(**kwargs)
+        user_id = User.objects.get(id=self.request.user.id).id
         context['user_id'] = user_id
         return context

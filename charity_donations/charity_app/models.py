@@ -1,6 +1,9 @@
 """Import base built in django model USER"""
+from django.contrib.auth.backends import ModelBackend, UserModel
 from django.contrib.auth.models import User
+from django.core.exceptions import MultipleObjectsReturned
 from django.db import models
+from django.db.models import Q
 
 
 class Category(models.Model):
@@ -45,3 +48,28 @@ class Donation(models.Model):
 
 class Users(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+
+"""OVERRIDE USER AUTHENTICATE , ALLOW TO LOGIN BY USERNAME OR EMAIL
+    ALSO NEED TO IMPORT IN SETTINGS.PY """
+
+
+class EmailBackend(ModelBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        try:  # to allow authentication through email or username or any other field, modify the below statement
+            user = UserModel.objects.get(Q(username__iexact=username) | Q(email__iexact=username))
+        except UserModel.DoesNotExist:
+            UserModel().set_password(password)
+        except MultipleObjectsReturned:
+            return User.objects.filter(email=username).order_by('id').first()
+        else:
+            if user.check_password(password) and self.user_can_authenticate(user):
+                return user
+
+    def get_user(self, user_id):
+        try:
+            user = UserModel.objects.get(pk=user_id)
+        except UserModel.DoesNotExist:
+            return None
+
+        return user if self.user_can_authenticate(user) else None

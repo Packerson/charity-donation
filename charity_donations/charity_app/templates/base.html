@@ -22,8 +22,9 @@
                                 Witaj {{ user.username }}
                                 <ul class="dropdown">
                                     <li><a href="{% url 'User_profile'  %}">Profil</a></li>
+                                    <li><a href="{% url 'User_settings' pk=user.id %}">Ustawienia</a></li>
                                     <li><a href="{% url 'Donation' %}">Moje zbiórki</a></li>
-                                    <li><a href="{% url 'logout' %}">Wyloguj</a></li>
+                                    <li><a href="{% url 'logout'  %}">Wyloguj</a></li>
 
                                     {% if user.is_staff %}
 

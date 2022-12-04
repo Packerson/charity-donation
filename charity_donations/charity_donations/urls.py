@@ -20,7 +20,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from charity_app.views import LandingPage, AddDonation, login_view, \
-    Register, logout_view, UserProfile, confirmation_view, MyDonation, UpdateDonation
+    Register, logout_view, UserProfile, confirmation_view, MyDonation, UpdateDonation, \
+    UserSettings
 
 
 urlpatterns = [
@@ -29,9 +30,15 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout', logout_view, name='logout'),
     path('adddonation/', login_required(AddDonation.as_view()), name='Add_donation'),
+    path('confirmation/', confirmation_view, name='Confirmation'),
+    path('donation/<int:pk>', login_required(UpdateDonation.as_view()), name='Update_donation'),
+
+
     path('register/', Register.as_view(), name='Register'),
     path('profile/', login_required(UserProfile.as_view()), name='User_profile'),
     path('donation/', login_required(MyDonation.as_view()), name='Donation'),
-    path('confirmation/', confirmation_view, name='Confirmation'),
-    path('donation/<int:pk>', login_required(UpdateDonation.as_view()), name='Update_donation')
+    path('profile/<int:pk>/', login_required(UserSettings.as_view()), name='User_settings'),
+
+
+
 ]

@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.sites import requests
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
@@ -244,4 +245,5 @@ class UserSettings(UpdateView):
         context = super(UserSettings, self).get_context_data(**kwargs)
         user_id = User.objects.get(id=self.request.user.id).id
         context['user_id'] = user_id
+
         return context

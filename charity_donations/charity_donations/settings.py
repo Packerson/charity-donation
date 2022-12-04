@@ -132,3 +132,5 @@ except ModuleNotFoundError:
     print("No database configuration in local_settings.py!")
     print("Update data and try again!")
     exit(0)
+
+AUTHENTICATION_BACKENDS = ('charity_app.models.EmailBackend',)

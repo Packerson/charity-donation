@@ -4,8 +4,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.models import User
 
-from charity_app.forms import SignUpForm
+from charity_app.forms import SignUpForm, UserSettingsForm
 from charity_app.models import Donation, Institution, Category
 
 """
@@ -178,7 +179,6 @@ def logout_view(request):
 
 class Register(CreateView):
     form_class = SignUpForm
-    # model = User
     success_url = reverse_lazy('login')
     template_name = 'register.html'
     success_message = "Your profile was created successfully"
@@ -198,32 +198,50 @@ class UserProfile(ListView):
 class MyDonation(ListView):
     template_name = 'my_donation.html'
     model = Donation
-    ordering = ['is_taken', 'pick_up_date']
-    
-    def get_queryset(self):
-        queryset = Donation.objects.filter(user_id=self.request.user)
-        return queryset
+    ordering = ['pick_up_date', '-creation_time']
 
-    # def get_ordering(self):
-    #     ordering = self.request.GET.get('id')
-    #     return ordering
+    def get_queryset(self):
+        queryset = Donation.objects.filter(user_id=self.request.user).filter(is_taken=False)
+        return queryset
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super(MyDonation, self).get_context_data(**kwargs)
         user_id = self.request.user.id
         context['user_id'] = user_id
+        context['institutions'] = Donation.objects.filter(user_id=self.request.user).filter(is_taken=True)
         return context
 
 
 class UpdateDonation(UpdateView):
+    """UPDATE IS TAKEN FIELD """
 
     model = Donation
     fields = ('is_taken',)
     template_name = 'update_donation.html'
     success_url = reverse_lazy('Donation')
 
+    """FILTER BY USER.ID TO CHECK OWNER"""
+    def get_queryset(self):
+        queryset = Donation.objects.filter(user_id=self.request.user)
+        return queryset
+
+    """ GET USER ID TO COMPARE AND VALIDATE ACCESS """
     def get_context_data(self, object_list=None, **kwargs):
         context = super(UpdateDonation, self).get_context_data(**kwargs)
-        user_id = self.request.user.id
+        user_id = Donation.objects.filter(user_id=self.request.user).first().user_id
+        context['user_id'] = user_id
+        return context
+
+
+class UserSettings(UpdateView):
+
+    model = User
+    form_class = UserSettingsForm
+    template_name = 'User_settings.html'
+    success_url = reverse_lazy('User_profile')
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super(UserSettings, self).get_context_data(**kwargs)
+        user_id = User.objects.get(id=self.request.user.id).id
         context['user_id'] = user_id
         return context

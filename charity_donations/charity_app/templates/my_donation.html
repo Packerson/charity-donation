@@ -16,38 +16,73 @@
 
 
                 <div class="slogan--steps">
-{% for donation in object_list %}
+                    {% for donation in object_list %}
+
                  <table class="tg">
 
                     <thead>
                       <tr>
                         <th class="tg-6ywj">ID</th>
-                        <th class="tg-6ywj">Quantity</th>
-                        <th class="tg-6ywj">Categories</th>
-                        <th class="tg-6ywj">Institution</th>
-                        <th class="tg-6ywj">Pick_up_date</th>
-                        <th class="tg-6ywj">Pick_up_time</th>
-                        <th class="tg-7cam">Is taken</th>
+                        <th class="tg-6ywj">Ilość</th>
+                        <th class="tg-6ywj">Kategoria</th>
+                        <th class="tg-6ywj">Instytucja</th>
+                        <th class="tg-6ywj">Data zabrania</th>
+                        <th class="tg-6ywj">Godzina zabrania</th>
+                        <th class="tg-6ywj">Czy dostarczone?</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td class="tg-6ywj">{{donation.id}}</td>
-                        <td class="tg-6ywj">{{donation.quantity}}</td>
+                        <td class="tg-7cam">{{donation.id}}</td>
+                        <td class="tg-7cam">{{donation.quantity}}</td>
                           {% for category in donation.categories.all %}
-                        <td class="tg-6ywj">{{category}}</td>
+                        <td class="tg-7cam">{{category}}</td>
                           {% endfor %}
-                        <td class="tg-6ywj">{{donation.institution}}</td>
-                        <td class="tg-6ywj">{{donation.pick_up_date}}</td>
-                        <td class="tg-6ywj">{{donation.pick_up_time}}</td>
-                        <td class="tg-6ywj"><a href="{% url 'Update_donation' pk=donation.id %}">{{donation.is_taken}}</a> </td>
+                        <td class="tg-7cam">{{donation.institution}}</td>
+                        <td class="tg-7cam">{{donation.pick_up_date}}</td>
+                        <td class="tg-7cam">{{donation.pick_up_time}}</td>
+                        <td class="tg-7cam"><a href="{% url 'Update_donation' pk=donation.id %}">{{donation.is_taken}} (EDIT)</a> </td>
 
                       </tr>
                     </tbody>
                     </table>
-                 {% empty %}
-                 <span class="description">No donation yet.</span> <br>
+
+                    {% empty %}
+                 <span class="description">No donations</span> <br>
                  {% endfor %}
+
+                <h2>Darowizny dostarczone</h2>
+
+                    {% for institution in institutions %}
+                 <table class="tg">
+                <thead>
+                  <tr>
+                    <th class="tg-6ywj-taken">ID</th>
+                    <th class="tg-6ywj-taken">Ilość</th>
+                    <th class="tg-6ywj-taken">Kategoria</th>
+                    <th class="tg-6ywj-taken">Instytucja</th>
+                    <th class="tg-6ywj-taken">Data zabrania</th>
+                    <th class="tg-6ywj-taken">Data zabrania</th>
+                    <th class="tg-6ywj-taken">Dostarczone</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="tg-7cam-taken">{{institution.id}}</td>
+                    <td class="tg-7cam-taken">{{institution.quantity}}</td>
+                      {% for category in institution.categories.all %}
+                    <td class="tg-7cam-taken">{{category}}</td>
+                      {% endfor %}
+                    <td class="tg-7cam-taken">{{institution.institution}}</td>
+                    <td class="tg-7cam-taken">{{institution.pick_up_date}}</td>
+                    <td class="tg-7cam-taken">{{institution.pick_up_time}}</td>
+                    <td class="tg-7cam-taken"><a href="{% url 'Update_donation' pk=institution.id %}">{{institution.is_taken}} (EDIT)</a> </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+                    {% endfor %}
+
 
                 </div>
             </div>

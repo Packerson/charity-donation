@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+<body>
+{% block content %}
+
+{% if user.is_authenticated %}
+    {% if user.id == user_id %}
+
+
+        <div class="slogan container container--90">
+            <div class="slogan--item">
+              <h1>
+                Dane użytkownika
+              </h1>
+                <div class="slogan--steps">
+                    <form method="post">
+                             {% csrf_token %}
+
+                        <table class="tg">
+                            <thead>
+                              <tr>
+                                <th class="tg-6ywj">Username</th>
+                                <td class="tg-6ywj">{{form.username}}</td>
+                              </tr>
+                            <tr>
+                                <th class="tg-6ywj">Email</th>
+                                <td class="tg-6ywj">{{form.email}}</td>
+                              </tr>
+                            </thead>
+                        </table>
+
+
+
+
+
+                    <button class="btn" type="submit" value="Update">Update</button>
+
+
+                    </div>
+ </form>
+
+            </div>
+
+
+        </div>
+    </header>
+
+
+    {% else %}
+        You are not the correct user
+    {% endif %}
+
+{% else %}
+    You are not allowed here
+
+
+{% endif %}
+{% endblock %}
+</body>

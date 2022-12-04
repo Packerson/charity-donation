@@ -15,7 +15,6 @@ class SignUpForm(UserCreationForm):
         """fields and attributes"""
         super(SignUpForm, self).__init__(*args, **kwargs)
 
-
         self.fields['email'].widget.attrs = {'class': 'form-group', 'placeholder': 'Email'}
         self.fields['password1'].widget.attrs = {'class': 'form-group', 'placeholder': 'Hasło'}
         self.fields['password2'].widget.attrs = {'class': 'form-group', 'placeholder': 'Powtórz hasło'}
@@ -32,4 +31,16 @@ class SignUpForm(UserCreationForm):
         """need to rewrite username"""
         self.instance.username = self.clean_email()
         return super(SignUpForm, self).save()
+
         
+class UserSettingsForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ('username', 'email')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['username'].widget.attrs = {'class': 'form-group'}
+        self.fields['email'].widget.attrs = {'class': 'form-group'}

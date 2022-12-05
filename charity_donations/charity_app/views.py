@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserChangeForm
 from django.contrib.sites import requests
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -237,7 +238,7 @@ class UpdateDonation(UpdateView):
 class UserSettings(UpdateView):
 
     model = User
-    form_class = UserSettingsForm
+    form_class = UserChangeForm
     template_name = 'User_settings.html'
     success_url = reverse_lazy('User_profile')
 
@@ -247,3 +248,6 @@ class UserSettings(UpdateView):
         context['user_id'] = user_id
 
         return context
+
+    def get_object(self, queryset=None):
+        return self.request.user

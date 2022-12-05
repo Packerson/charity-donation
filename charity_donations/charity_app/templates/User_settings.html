@@ -13,29 +13,44 @@
         <div class="slogan container container--90">
             <div class="slogan--item">
               <h1>
-                Dane użytkownika
-
-                  {{messages}}
+                Edycja danych użytkownika:
               </h1>
                 <div class="slogan--steps">
                     <form method="post">
                              {% csrf_token %}
 
+                        {% if form.errors %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+
                         <table class="tg">
                             <thead>
                               <tr>
-                                <th class="tg-6ywj">Username</th>
+                                <th class="tg-6ywj">Nazwa użytkownika</th>
                                 <td class="tg-6ywj">{{form.username}}</td>
                               </tr>
                             <tr>
                                 <th class="tg-6ywj">Email</th>
                                 <td class="tg-6ywj">{{form.email}}</td>
                               </tr>
+                              <tr>
+                                <th class="tg-6ywj">Imię</th>
+                                <td class="tg-6ywj">{{form.first_name}}</td>
+                              </tr>
+                              <tr>
+                                <th class="tg-6ywj">Nazwisko</th>
+                                <td class="tg-6ywj">{{form.last_name}}</td>
+                              </tr>
                             <tr>
                                 <th class="tg-6ywj">Aby zatwierdzić wpisz hasło</th>
                                 <td class="tg-6ywj">{{form.password}}</td>
-                                    {{form.password2}}
-
                               </tr>
                             </thead>
                         </table>

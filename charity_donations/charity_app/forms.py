@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.http import request
 
 from django.urls import reverse
 from django.utils.text import slugify
@@ -37,23 +39,24 @@ class SignUpForm(UserCreationForm):
 class UserSettingsForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
-
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password')
 
-    def __init__(self,  *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
+        self.user = request.user
         self.fields['username'].widget.attrs = {'class': 'form-group'}
         self.fields['email'].widget.attrs = {'class': 'form-group'}
+        self.fields['first_name'].widget.attrs = {'class': 'form-group'}
+        self.fields['last_name'].widget.attrs = {'class': 'form-group'}
         self.fields['password'].widget.attrs = {'class': 'form-group'}
 
-
     def clean_password(self):
-        password = self.cleaned_data['password']
-        return password
+        valid = self.user.check_password(self.cleaned_data['password'])
+        if not valid:
+            raise ValidationError('Hasło nie prawidłowe')
 
     # def clean_password2(self):
     #     password2 = self.cleaned_data['password2']

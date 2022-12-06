@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth.views import PasswordChangeView
 from django.contrib.sites import requests
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -256,3 +257,22 @@ class UserSettings(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
+class ChangingPasswordView(PasswordChangeView):
+    # form_class = PasswordChangeView
+    form_class = PasswordChangeForm
+    template_name = 'password_change.html'
+    success_url = reverse_lazy('password_success')
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super(ChangingPasswordView, self).get_context_data(**kwargs)
+        user_id = User.objects.get(id=self.request.user.id).id
+        context['user_id'] = user_id
+
+        return context
+
+
+def password_success(request):
+    context = {'user_id': request.user.id}
+    return render(request, "password_success.html", context)

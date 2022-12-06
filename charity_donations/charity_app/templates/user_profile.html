@@ -18,13 +18,46 @@
               </h1>
                  <div class="slogan--steps">
 
-                            <span class="description">Username: {{user.username}}</span> <br>
-                            <span class="description">Email : {{user.email}}</span>       <br>
-                            <span class="description">Data joined : {{user.date_joined}}</span> </br>
+
+
+                     <table class="tg">
+                            <thead>
+                              <tr>
+                                <th class="tg-6ywj">Nazwa użytkownika</th>
+                                <td class="tg-6ywj">{{user.username}}</td>
+                              </tr>
+                            <tr>
+                                <th class="tg-6ywj">Email</th>
+                                <td class="tg-6ywj">{{user.email}}</td>
+                              </tr>
+
+                            <tr>
+                                <th class="tg-6ywj">Data dołączenia</th>
+                                <td class="tg-6ywj">{{user.date_joined}}</td>
+                              </tr><tr>
+                                <th class="tg-6ywj">Imię</th>
+                                <td class="tg-6ywj">{{user.first_name}}</td>
+                              </tr><tr>
+                                <th class="tg-6ywj">Nazwisko</th>
+                                <td class="tg-6ywj">{{user.last_name}}</td>
+                              </tr>
+                            </thead>
+                        </table>
 
                  </div>
             </div>
 
+            {% if form.errors %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+                        </div>
 
         </div>
     </header>

@@ -238,7 +238,7 @@ class UpdateDonation(UpdateView):
 class UserSettings(UpdateView):
 
     model = User
-    form_class = UserChangeForm
+    form_class = UserSettingsForm
     template_name = 'User_settings.html'
     success_url = reverse_lazy('User_profile')
 
@@ -248,6 +248,11 @@ class UserSettings(UpdateView):
         context['user_id'] = user_id
 
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
     def get_object(self, queryset=None):
         return self.request.user

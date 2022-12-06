@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth.views import PasswordChangeView
 from django.contrib.sites import requests
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -12,7 +13,7 @@ from charity_app.forms import SignUpForm, UserSettingsForm
 from charity_app.models import Donation, Institution, Category
 
 """
-
+problem z potwierdzeniem hasła przy aktualizacji danych
 
 przycisk submit nie działa, pobrać go do js i zrobić submit
 
@@ -180,6 +181,8 @@ def logout_view(request):
 
 
 class Register(CreateView):
+    """USER CREATION VIEW"""
+
     form_class = SignUpForm
     success_url = reverse_lazy('login')
     template_name = 'register.html'
@@ -187,10 +190,13 @@ class Register(CreateView):
 
 
 class UserProfile(ListView):
+    """PROFILE VIEW"""
     template_name = 'user_profile.html'
     model = Donation
 
     def get_context_data(self, object_list=None, **kwargs):
+        """ GET USER ID TO COMPARE AND VALIDATE ACCESS """
+
         context = super(UserProfile, self).get_context_data(**kwargs)
         user_id = self.request.user.id
         context['user_id'] = user_id
@@ -198,15 +204,25 @@ class UserProfile(ListView):
 
 
 class MyDonation(ListView):
+
+    """VIEW FOR MY DONATION LIST, ORDER BY PICK UP DATE AND CREATION TIME"""
+
     template_name = 'my_donation.html'
     model = Donation
     ordering = ['pick_up_date', '-creation_time']
 
     def get_queryset(self):
+
+        """SEND ONLY NON TAKEN DONATIONS"""
+
         queryset = Donation.objects.filter(user_id=self.request.user).filter(is_taken=False)
         return queryset
 
     def get_context_data(self, object_list=None, **kwargs):
+
+        """ GET USER ID TO COMPARE AND VALIDATE ACCESS """
+        """SEND THROUGH CONTEXT TAKEN INSTITUTIONS"""
+
         context = super(MyDonation, self).get_context_data(**kwargs)
         user_id = self.request.user.id
         context['user_id'] = user_id
@@ -215,7 +231,8 @@ class MyDonation(ListView):
 
 
 class UpdateDonation(UpdateView):
-    """UPDATE IS TAKEN FIELD """
+
+    """UPDATE 'IS TAKEN' FIELD """
 
     model = Donation
     fields = ('is_taken',)
@@ -237,12 +254,17 @@ class UpdateDonation(UpdateView):
 
 class UserSettings(UpdateView):
 
+    """BASE VIEW FOR UPDATE USER INFORMATION'S """
+
     model = User
     form_class = UserSettingsForm
     template_name = 'User_settings.html'
     success_url = reverse_lazy('User_profile')
 
     def get_context_data(self, object_list=None, **kwargs):
+
+        """ GET USER ID TO COMPARE AND VALIDATE ACCESS """
+
         context = super(UserSettings, self).get_context_data(**kwargs)
         user_id = User.objects.get(id=self.request.user.id).id
         context['user_id'] = user_id
@@ -250,9 +272,40 @@ class UserSettings(UpdateView):
         return context
 
     def get_form_kwargs(self):
+
+        """REQUEST SEND AS ARGUMENT TO FORM, THANKS THIS FORM HAS ACCESS TO USER OBJECT"""
+
         kwargs = super().get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
 
     def get_object(self, queryset=None):
+
+        """OBJECT TO GET INITIAL VALUE TO TEMPLATE"""
+
         return self.request.user
+
+
+class ChangingPasswordView(PasswordChangeView):
+
+    """VIEW FOR CHANGING PASSWORD , PASSWORDCHANGEFORM IS FROM DJANGO.AUTH"""
+
+    # form_class = PasswordChangeView
+    form_class = PasswordChangeForm
+    template_name = 'password_change.html'
+    success_url = reverse_lazy('password_success')
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super(ChangingPasswordView, self).get_context_data(**kwargs)
+        user_id = User.objects.get(id=self.request.user.id).id
+        context['user_id'] = user_id
+
+        return context
+
+
+def password_success(request):
+
+    """METHOD FOR REDIRECT AFTER SUCCESSFULLY CHANGING PASSWORD"""
+
+    context = {'user_id': request.user.id}
+    return render(request, "password_success.html", context)

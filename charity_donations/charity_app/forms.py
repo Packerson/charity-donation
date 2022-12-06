@@ -53,9 +53,15 @@ class UserSettingsForm(forms.ModelForm):
         self.fields['password'].widget.attrs = {'class': 'form-group'}
 
     def clean_password(self):
-        password = self.cleaned_data['password']
-        print(password)
-        return password
+        updated_user = authenticate(username=self.user.email, password=self.cleaned_data['password'])
+        if updated_user:
+            print('działa')
+            password = self.cleaned_data['password']
+            print(password)
+            return password
+        print("nie działa")
+        raise forms.ValidationError('nieprawidłowe hasło')
+
 
     def clean_username(self):
         if not self.cleaned_data['username']:
@@ -88,11 +94,11 @@ class UserSettingsForm(forms.ModelForm):
         print(last_name)
         return last_name
 
-    def save(self, commit=True):
-        """need to rewrite username"""
-        if authenticate(username=self.user.email, password=self.clean_password()):
-            print('działa')
-            return super(UserSettingsForm, self).save()
-        else:
-            print("nie działa")
-            return ValidationError('Hasło nieprawidłowe')
+    # def save(self, commit=True):
+    #     """need to rewrite username"""
+    #     if authenticate(username=self.user.email, password=self.clean_password()):
+    #         print('działa')
+    #         return super(UserSettingsForm, self).save()
+    #     else:
+    #         print("nie działa")
+    #         return ValidationError('Hasło nieprawidłowe')

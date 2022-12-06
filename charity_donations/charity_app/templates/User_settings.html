@@ -47,12 +47,14 @@
                         </table>
                           <button class="btn" type="submit" value="Update">Update</button>
 
-
-
-
-
                     </form>
+                    <form action="{% url 'password_change' %}">
+                        <input class="btn" type="submit" value="Zmiana hasła" />
+                    </form>
+
                     </div>
+
+
 
                  <div class="slogan--steps">
                              {% if form.errors %}

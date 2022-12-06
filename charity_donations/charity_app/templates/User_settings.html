@@ -19,16 +19,7 @@
                     <form method="post">
                              {% csrf_token %}
 
-                        {% if form.errors %}
-                            {% for field in form %}
-                                {% for error in field.errors %}
-                                    {{ error|escape }}
-                                {% endfor %}
-                            {% endfor %}
-                            {% for error in form.non_field_errors %}
-                                {{ error|escape }}
-                            {% endfor %}
-                        {% endif %}
+
 
                         <table class="tg">
                             <thead>
@@ -54,13 +45,27 @@
                               </tr>
                             </thead>
                         </table>
+                          <button class="btn" type="submit" value="Update">Update</button>
 
 
-                    <button class="btn" type="submit" value="Update">Update</button>
+
+
 
                     </form>
                     </div>
 
+                 <div class="slogan--steps">
+                             {% if form.errors %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+                        </div>
 
             </div>
 

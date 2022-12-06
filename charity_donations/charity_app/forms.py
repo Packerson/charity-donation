@@ -1,15 +1,14 @@
 from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.http import request
-
+from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from django.utils.text import slugify
 
 
 class SignUpForm(UserCreationForm):
-
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
@@ -35,7 +34,7 @@ class SignUpForm(UserCreationForm):
         self.instance.username = self.clean_email()
         return super(SignUpForm, self).save()
 
-        
+
 class UserSettingsForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
@@ -54,15 +53,46 @@ class UserSettingsForm(forms.ModelForm):
         self.fields['password'].widget.attrs = {'class': 'form-group'}
 
     def clean_password(self):
-        valid = self.user.check_password(self.cleaned_data['password'])
-        if not valid:
-            raise ValidationError('Hasło nie prawidłowe')
+        password = self.cleaned_data['password']
+        print(password)
+        return password
 
-    # def clean_password2(self):
-    #     password2 = self.cleaned_data['password2']
-    #     print(password2)
-    #     return password2
-    #
-    # def save(self, commit=True):
-    #     if self.clean_password() == self.clean_password2():
-    #         return super(UserSettingsForm, self).save()
+    def clean_username(self):
+        if not self.cleaned_data['username']:
+            username = self.user.username
+        else:
+            username = self.cleaned_data['username']
+        return username
+
+    def clean_email(self):
+        if not self.cleaned_data['email']:
+            email = self.user.email
+        else:
+            email = self.cleaned_data['email']
+
+        return email
+
+    def clean_first_name(self):
+        if not self.cleaned_data['first_name']:
+            first_name = self.user.first_name
+        else:
+            first_name = self.cleaned_data['first_name']
+        print(first_name)
+        return first_name
+
+    def clean_last_name(self):
+        if not self.cleaned_data['last_name']:
+            last_name = self.user.last_name
+        else:
+            last_name = self.cleaned_data['last_name']
+        print(last_name)
+        return last_name
+
+    def save(self, commit=True):
+        """need to rewrite username"""
+        if authenticate(username=self.user.email, password=self.clean_password()):
+            print('działa')
+            return super(UserSettingsForm, self).save()
+        else:
+            print("nie działa")
+            return ValidationError('Hasło nieprawidłowe')

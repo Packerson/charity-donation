@@ -9,6 +9,10 @@ from django.utils.text import slugify
 
 
 class SignUpForm(UserCreationForm):
+
+    """USER CREATION FORM WITH EMAIL, PASSWORD, PASSWORD2 FIELDS
+        EMAIL = USERNAME, CAN BE CHANGE IN USER SETTINGS """
+
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
@@ -25,17 +29,24 @@ class SignUpForm(UserCreationForm):
         email = self.cleaned_data['email']
         return email
 
-    def slug_generic(self):
-        slug = slugify(self.clean_email())
-        return reverse('User_profile', kwargs={"slug": self.clean_email()})
+    # def slug_generic(self):
+    #     slug = slugify(self.clean_email())
+    #     return reverse('User_profile', kwargs={"slug": self.clean_email()})
 
     def save(self, commit=True):
+
+        """ EMAIL = USERNAME"""
         """need to rewrite username"""
+
         self.instance.username = self.clean_email()
         return super(SignUpForm, self).save()
 
 
 class UserSettingsForm(forms.ModelForm):
+
+    """USER SETTINGS FORM, USER CAN ADD OR CHANGE HIS PROFILE,
+        TO DO THAT NEED TO CONFIRM HIS PASSWORD"""
+
     password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
@@ -53,15 +64,17 @@ class UserSettingsForm(forms.ModelForm):
         self.fields['password'].widget.attrs = {'class': 'form-group'}
 
     def clean_password(self):
-        updated_user = authenticate(username=self.user.email, password=self.cleaned_data['password'])
-        if updated_user:
-            print('działa')
-            password = self.cleaned_data['password']
-            print(password)
-            return password
-        print("nie działa")
-        raise forms.ValidationError('nieprawidłowe hasło')
 
+        """VALIDATE ENTERED PASSWORD BY AUTHENTICATE """
+
+        updated_user = authenticate(username=self.user.email,
+                                    password=self.cleaned_data['password'])
+        if updated_user:
+            password = self.user.password
+
+            return password
+
+        raise forms.ValidationError('nieprawidłowe hasło')
 
     def clean_username(self):
         if not self.cleaned_data['username']:
@@ -94,11 +107,3 @@ class UserSettingsForm(forms.ModelForm):
         print(last_name)
         return last_name
 
-    # def save(self, commit=True):
-    #     """need to rewrite username"""
-    #     if authenticate(username=self.user.email, password=self.clean_password()):
-    #         print('działa')
-    #         return super(UserSettingsForm, self).save()
-    #     else:
-    #         print("nie działa")
-    #         return ValidationError('Hasło nieprawidłowe')

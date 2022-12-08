@@ -134,3 +134,12 @@ except ModuleNotFoundError:
     exit(0)
 
 AUTHENTICATION_BACKENDS = ('charity_app.models.EmailBackend',)
+
+
+"""EMAIL SETTINGS"""
+#
+EMAIL_HOST = 'smtp.wp.com'
+EMAIL_HOST_USER = '465'
+EMAIL_ADDRESS = 'szachista49@wp.pl'
+EMAIL_PASSWORD = ''
+EMAIL_USE_SSL = True

@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from django.utils.text import slugify
+from django.core.mail import EmailMessage
 
 
 class SignUpForm(UserCreationForm):
@@ -25,6 +26,22 @@ class SignUpForm(UserCreationForm):
         self.fields['password1'].widget.attrs = {'class': 'form-group', 'placeholder': 'Hasło'}
         self.fields['password2'].widget.attrs = {'class': 'form-group', 'placeholder': 'Powtórz hasło'}
 
+    def send_email(self):
+        email_subject = f"Witaj {self.clean_email()} "
+        email_body = "Wciśnij link by aktywować konto"
+        mail = EmailMessage(
+            email_subject,
+            email_body,
+            ['szachista49@wp.pl'], # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+            ['pawel.91.kaczmarek@gmail.com'], # to email
+
+            reply_to=['szachista49@gmail.com'],
+            headers={'Message-ID': 'foo'},
+        )
+        mail.send(fail_silently=False)
+        print("wysłano maila")
+        return mail
+
     def clean_email(self):
         email = self.cleaned_data['email']
         return email
@@ -37,7 +54,7 @@ class SignUpForm(UserCreationForm):
 
         """ EMAIL = USERNAME"""
         """need to rewrite username"""
-
+        self.send_email()
         self.instance.username = self.clean_email()
         return super(SignUpForm, self).save()
 

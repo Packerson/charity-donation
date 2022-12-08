@@ -13,7 +13,7 @@ from charity_app.forms import SignUpForm, UserSettingsForm
 from charity_app.models import Donation, Institution, Category
 
 """
-problem z potwierdzeniem hasła przy aktualizacji danych
+https://www.youtube.com/watch?v=xNqnHmXIuzU watch!
 
 przycisk submit nie działa, pobrać go do js i zrobić submit
 

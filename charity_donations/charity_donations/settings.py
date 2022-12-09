@@ -137,9 +137,18 @@ AUTHENTICATION_BACKENDS = ('charity_app.models.EmailBackend',)
 
 
 """EMAIL SETTINGS"""
-#
-EMAIL_HOST = 'smtp.wp.com'
-EMAIL_HOST_USER = '465'
+
+EMAIL_HOST = 'smtp.wp.pl'
+# EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 465
 EMAIL_ADDRESS = 'szachista49@wp.pl'
 EMAIL_PASSWORD = ''
-EMAIL_USE_SSL = True
+try:
+    from charity_donations.local_settings import EMAIL_PASSWORD
+except ModuleNotFoundError:
+    print("No password in local_settings.py!")
+    print("Update data and try again!")
+    exit(0)
+
+    EMAIL_USE_SSL = False
+    EMAIL_USE_TLS = True

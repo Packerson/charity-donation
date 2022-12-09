@@ -32,8 +32,9 @@ class SignUpForm(UserCreationForm):
         mail = EmailMessage(
             email_subject,
             email_body,
-            ['szachista49@wp.pl'], # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-            ['pawel.91.kaczmarek@gmail.com'], # to email
+            'szachista49@wp.pl', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+            # 'pawel.91.kaczmarek@gmail.com', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+            ['pawel.dev.kaczmarek@gmail.com'], # to email
 
             reply_to=['szachista49@gmail.com'],
             headers={'Message-ID': 'foo'},

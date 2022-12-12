@@ -2,17 +2,22 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-from django.contrib.auth.hashers import check_password
-from django.http import BadHeaderError, HttpResponse
-from django.urls import reverse
-from django.utils.text import slugify
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
+from django.http import BadHeaderError
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
+from charity_app.tokens import account_activation_token
+
+
+# def activate_email(request, to_email):
+#     messages.success(request, f" , sprawdź email: {to_email},"
+#                               f" i wejdź w link aktywacyjny ")
 
 
 class SignUpForm(UserCreationForm):
-
     """USER CREATION FORM WITH EMAIL, PASSWORD, PASSWORD2 FIELDS
         EMAIL = USERNAME, CAN BE CHANGE IN USER SETTINGS """
 
@@ -20,55 +25,65 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('email', 'password1', 'password2')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         """fields and attributes"""
         super(SignUpForm, self).__init__(*args, **kwargs)
 
+        self.request = request
         self.fields['email'].widget.attrs = {'class': 'form-group', 'placeholder': 'Email'}
         self.fields['password1'].widget.attrs = {'class': 'form-group', 'placeholder': 'Hasło'}
         self.fields['password2'].widget.attrs = {'class': 'form-group', 'placeholder': 'Powtórz hasło'}
-
-    def send_email(self):
-
-        email_subject = f"Witaj {self.clean_email()} "
-        email_body = "Wciśnij link by aktywować konto"
-        try:
-            send_mail(
-                email_subject,
-                email_body,
-                # 'szachista49@wp.pl', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-                'info@sharpmind.club', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-                # 'pawel.91.kaczmarek@gmail.com', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-                ['szachista49@gmail.com'], # to email na sztywno
-
-                # reply_to=['szachista49@gmail.com'],
-                # headers={'Message-ID': 'foo'},
-                fail_silently=False)
-            print("wysłano maila")
-            return email_body
-
-        except BadHeaderError:
-            return HttpResponse('Invalid header error')
 
     def clean_email(self):
         email = self.cleaned_data['email']
         return email
 
-    # def slug_generic(self):
-    #     slug = slugify(self.clean_email())
-    #     return reverse('User_profile', kwargs={"slug": self.clean_email()})
-
-    def save(self, commit=True):
+    def save(self, commit=False):
 
         """ EMAIL = USERNAME"""
         """need to rewrite username"""
-        self.send_email()
+
+        self.instance.is_active = False
         self.instance.username = self.clean_email()
-        return super(SignUpForm, self).save()
+        super(SignUpForm, self).save()
+        self.send_email(email=self.clean_email(), request=self.request)
+        return super(SignUpForm, self)
+
+    @staticmethod
+    def send_email(email, request):
+        user = User.objects.get(email=email)
+        email_subject = f"Witaj {user.email} "
+        email_body = render_to_string('template_activation_account.html',
+                                      {
+                                          'user': user.email,
+                                          'domain': get_current_site(request).domain,
+                                          'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                                          'token': account_activation_token.make_token(user),
+                                          'protocol': 'https' if request.is_secure() else 'http'
+
+                                      })
+        try:
+            send_mail(
+                email_subject,
+                email_body,
+                #
+                'info@sharpmind.club',  # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+                # 'pawel.91.kaczmarek@gmail.com', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+                ['szachista49@gmail.com'],  # to email na sztywno
+
+                # reply_to=['szachista49@gmail.com'],
+                # headers={'Message-ID': 'foo'},
+                fail_silently=False)
+            # messages.success(requests, f"Aby aktywować konto sprawdź maila: {self.clean_email()} i kliknij w link aktywacyjny")
+            print("wysłano maila")
+            return email_subject
+
+        except BadHeaderError:
+            # messages.error(requests, "coś poszło nie tak")
+            return email_subject
 
 
 class UserSettingsForm(forms.ModelForm):
-
     """USER SETTINGS FORM, USER CAN ADD OR CHANGE HIS PROFILE,
         TO DO THAT NEED TO CONFIRM HIS PASSWORD"""
 
@@ -131,4 +146,3 @@ class UserSettingsForm(forms.ModelForm):
             last_name = self.cleaned_data['last_name']
         print(last_name)
         return last_name
-

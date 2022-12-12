@@ -23,7 +23,7 @@ from django.contrib.auth.views import PasswordChangeView
 
 from charity_app.views import LandingPage, AddDonation, login_view, \
     Register, logout_view, UserProfile, confirmation_view, MyDonation, UpdateDonation, \
-    UserSettings, password_success, ChangingPasswordView
+    UserSettings, password_success, ChangingPasswordView, activation
 
 
 urlpatterns = [
@@ -42,6 +42,7 @@ urlpatterns = [
     path('profile/<int:pk>/', login_required(UserSettings.as_view()), name='User_settings'),
     path('profile/password/', ChangingPasswordView.as_view(), name='password_change'),
     path('profile/password/success', password_success, name='password_success'),
+    path('activate/<uidb64>/<token>', activation, name='Activate'),
 
 
 

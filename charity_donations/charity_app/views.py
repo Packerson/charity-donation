@@ -1,16 +1,18 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
-from django.contrib.sites import requests
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.models import User
 
 from charity_app.forms import SignUpForm, UserSettingsForm
 from charity_app.models import Donation, Institution, Category
+from charity_app.tokens import account_activation_token
 
 """
 https://www.youtube.com/watch?v=xNqnHmXIuzU watch!
@@ -188,6 +190,33 @@ class Register(CreateView):
     template_name = 'register.html'
     success_message = "Your profile was created successfully"
 
+    def get_form_kwargs(self):
+        """REQUEST SEND AS ARGUMENT TO FORM, THANKS THIS FORM HAS ACCESS TO USER OBJECT"""
+
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+
+def activation(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+
+    except:
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        messages.success(request, "Dziękuje za potwierdzenie konta, teraz możesz się zalogować")
+        return redirect('login')
+
+    else:
+        messages.error(request, "Link aktywacyjny jest nieaktywny")
+        return redirect('Landing_page')
 
 class UserProfile(ListView):
     """PROFILE VIEW"""
@@ -204,7 +233,6 @@ class UserProfile(ListView):
 
 
 class MyDonation(ListView):
-
     """VIEW FOR MY DONATION LIST, ORDER BY PICK UP DATE AND CREATION TIME"""
 
     template_name = 'my_donation.html'
@@ -212,14 +240,12 @@ class MyDonation(ListView):
     ordering = ['pick_up_date', '-creation_time']
 
     def get_queryset(self):
-
         """SEND ONLY NON TAKEN DONATIONS"""
 
         queryset = Donation.objects.filter(user_id=self.request.user).filter(is_taken=False)
         return queryset
 
     def get_context_data(self, object_list=None, **kwargs):
-
         """ GET USER ID TO COMPARE AND VALIDATE ACCESS """
         """SEND THROUGH CONTEXT TAKEN INSTITUTIONS"""
 
@@ -231,7 +257,6 @@ class MyDonation(ListView):
 
 
 class UpdateDonation(UpdateView):
-
     """UPDATE 'IS TAKEN' FIELD """
 
     model = Donation
@@ -240,11 +265,13 @@ class UpdateDonation(UpdateView):
     success_url = reverse_lazy('Donation')
 
     """FILTER BY USER.ID TO CHECK OWNER"""
+
     def get_queryset(self):
         queryset = Donation.objects.filter(user_id=self.request.user)
         return queryset
 
     """ GET USER ID TO COMPARE AND VALIDATE ACCESS """
+
     def get_context_data(self, object_list=None, **kwargs):
         context = super(UpdateDonation, self).get_context_data(**kwargs)
         user_id = Donation.objects.filter(user_id=self.request.user).first().user_id
@@ -253,7 +280,6 @@ class UpdateDonation(UpdateView):
 
 
 class UserSettings(UpdateView):
-
     """BASE VIEW FOR UPDATE USER INFORMATION'S """
 
     model = User
@@ -262,7 +288,6 @@ class UserSettings(UpdateView):
     success_url = reverse_lazy('User_profile')
 
     def get_context_data(self, object_list=None, **kwargs):
-
         """ GET USER ID TO COMPARE AND VALIDATE ACCESS """
 
         context = super(UserSettings, self).get_context_data(**kwargs)
@@ -272,7 +297,6 @@ class UserSettings(UpdateView):
         return context
 
     def get_form_kwargs(self):
-
         """REQUEST SEND AS ARGUMENT TO FORM, THANKS THIS FORM HAS ACCESS TO USER OBJECT"""
 
         kwargs = super().get_form_kwargs()
@@ -280,14 +304,12 @@ class UserSettings(UpdateView):
         return kwargs
 
     def get_object(self, queryset=None):
-
         """OBJECT TO GET INITIAL VALUE TO TEMPLATE"""
 
         return self.request.user
 
 
 class ChangingPasswordView(PasswordChangeView):
-
     """VIEW FOR CHANGING PASSWORD , PASSWORDCHANGEFORM IS FROM DJANGO.AUTH"""
 
     # form_class = PasswordChangeView
@@ -304,7 +326,6 @@ class ChangingPasswordView(PasswordChangeView):
 
 
 def password_success(request):
-
     """METHOD FOR REDIRECT AFTER SUCCESSFULLY CHANGING PASSWORD"""
 
     context = {'user_id': request.user.id}

@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
+from charity_donations.local_settings import EMAIL_PASSWORD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-$muf@k)-l5$6atwop8f)h!tdn%*08g)cvbd%_3qgnf#1^!2es@
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -70,7 +69,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'charity_donations.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 #
@@ -100,7 +98,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -111,7 +108,6 @@ TIME_ZONE = 'Europe/Warsaw'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -133,22 +129,8 @@ except ModuleNotFoundError:
     print("Update data and try again!")
     exit(0)
 
-AUTHENTICATION_BACKENDS = ('charity_app.models.EmailBackend',)
+    """EMAIL SETTINGS"""
 
-
-"""EMAIL SETTINGS"""
-
-EMAIL_HOST = 'smtp.wp.pl'
-# EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 465
-EMAIL_ADDRESS = 'szachista49@wp.pl'
-EMAIL_PASSWORD = ''
-try:
-    from charity_donations.local_settings import EMAIL_PASSWORD
-except ModuleNotFoundError:
-    print("No password in local_settings.py!")
-    print("Update data and try again!")
-    exit(0)
-
-    EMAIL_USE_SSL = False
-    EMAIL_USE_TLS = True
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = EMAIL_PASSWORD
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False

@@ -4,9 +4,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import check_password
+from django.http import BadHeaderError, HttpResponse
 from django.urls import reverse
 from django.utils.text import slugify
-from django.core.mail import EmailMessage
+from django.core.mail import send_mail
+
 
 
 class SignUpForm(UserCreationForm):
@@ -27,21 +29,26 @@ class SignUpForm(UserCreationForm):
         self.fields['password2'].widget.attrs = {'class': 'form-group', 'placeholder': 'Powtórz hasło'}
 
     def send_email(self):
+
         email_subject = f"Witaj {self.clean_email()} "
         email_body = "Wciśnij link by aktywować konto"
-        mail = EmailMessage(
-            email_subject,
-            email_body,
-            'szachista49@wp.pl', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-            # 'pawel.91.kaczmarek@gmail.com', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-            ['pawel.dev.kaczmarek@gmail.com'], # to email
+        try:
+            send_mail(
+                email_subject,
+                email_body,
+                # 'szachista49@wp.pl', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+                'info@sharpmind.club', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+                # 'pawel.91.kaczmarek@gmail.com', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+                ['szachista49@gmail.com'], # to email na sztywno
 
-            reply_to=['szachista49@gmail.com'],
-            headers={'Message-ID': 'foo'},
-        )
-        mail.send(fail_silently=False)
-        print("wysłano maila")
-        return mail
+                # reply_to=['szachista49@gmail.com'],
+                # headers={'Message-ID': 'foo'},
+                fail_silently=False)
+            print("wysłano maila")
+            return email_body
+
+        except BadHeaderError:
+            return HttpResponse('Invalid header error')
 
     def clean_email(self):
         email = self.cleaned_data['email']

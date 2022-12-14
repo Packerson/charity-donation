@@ -187,7 +187,8 @@ def logout_view(request):
 
 
 class Register(View):
-    """USER CREATION VIEW"""
+    """USER CREATION VIEW
+    WITH EMAIL ACTIVATION LINK """
 
     form_class = SignUpForm
     # success_url = reverse_lazy('login')
@@ -201,13 +202,18 @@ class Register(View):
     #     kwargs.update({'request': self.request})
     #     return kwargs
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
+        """TEMPLATE VIEW"""
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
+        """FORM VIEW, """
+
         form = self.form_class(request.POST)
         if form.is_valid():
+            """IF FORM VALID, 
+            USER IS NOT ACTIVE"""
             # form.save()
             user = form.save(commit=False)
             user.is_active = False  # Deactivate account till it is confirmed
@@ -222,7 +228,7 @@ class Register(View):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
-
+            """SEND EMAIL WITH DETAILS"""
             send_mail(
                 email_subject,
                 email_message,
@@ -238,6 +244,11 @@ class Register(View):
 
 
 def activation(request, uidb64, token):
+
+    """VIEW SET THANKS TO ACTIVATION LINK,
+    DECODE UIDB64 AND TOKEN
+    user_is_active = True"""
+
     User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -247,6 +258,8 @@ def activation(request, uidb64, token):
         user = None
 
     if user is not None and account_activation_token.check_token(user, token):
+
+        """USER_ACTIVE = TRUE"""
         user.is_active = True
         user.save()
 

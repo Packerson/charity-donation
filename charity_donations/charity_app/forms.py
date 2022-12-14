@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
+
 from django.core.mail import send_mail
 from django.http import BadHeaderError
 from django.template.loader import render_to_string
@@ -25,62 +26,62 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('email', 'password1', 'password2')
 
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """fields and attributes"""
         super(SignUpForm, self).__init__(*args, **kwargs)
 
-        self.request = request
         self.fields['email'].widget.attrs = {'class': 'form-group', 'placeholder': 'Email'}
         self.fields['password1'].widget.attrs = {'class': 'form-group', 'placeholder': 'Hasło'}
         self.fields['password2'].widget.attrs = {'class': 'form-group', 'placeholder': 'Powtórz hasło'}
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        return email
+    # def clean_email(self):
+    #     email = self.cleaned_data['email']
+    #     return email
 
-    def save(self, commit=False):
-
-        """ EMAIL = USERNAME"""
-        """need to rewrite username"""
-
-        self.instance.is_active = False
-        self.instance.username = self.clean_email()
-        super(SignUpForm, self).save()
-        self.send_email(email=self.clean_email(), request=self.request)
-        return super(SignUpForm, self)
-
-    @staticmethod
-    def send_email(email, request):
-        user = User.objects.get(email=email)
-        email_subject = f"Witaj {user.email} "
-        email_body = render_to_string('template_activation_account.html',
-                                      {
-                                          'user': user.email,
-                                          'domain': get_current_site(request).domain,
-                                          'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                                          'token': account_activation_token.make_token(user),
-                                          'protocol': 'https' if request.is_secure() else 'http'
-
-                                      })
-        try:
-            send_mail(
-                email_subject,
-                email_body,
-                #
-                'info@sharpmind.club',  # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-                # 'pawel.91.kaczmarek@gmail.com', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-                ['szachista49@gmail.com'],  # to email na sztywno
-
-                # reply_to=['szachista49@gmail.com'],
-                # headers={'Message-ID': 'foo'},
-                fail_silently=False)
-            # messages.success(requests, f"Aby aktywować konto sprawdź maila: {self.clean_email()} i kliknij w link aktywacyjny")
-            print("wysłano maila")
-            return email_subject
-
-        except BadHeaderError:
-            # messages.error(requests, "coś poszło nie tak")
-            return email_subject
+    # def save(self, commit=False):
+    #
+    #     """ EMAIL = USERNAME"""
+    #     """need to rewrite username"""
+    #
+    #     self.instance.is_active = False
+    #     self.instance.username = self.clean_email()
+    #     super(SignUpForm, self).save()
+    #     # self.send_email(email=self.clean_email(), request=self.request)
+    #     return super(SignUpForm, self), self.send_email(email=self.clean_email(), request=self.request)
+    #
+    # @staticmethod
+    # def send_email(email, request):
+    #     user = User.objects.get(email=email)
+    #     email_subject = f"Witaj {user.email} "
+    #     current_site = get_current_site(request)
+    #     email_body = render_to_string('template_activation_account.html',
+    #                                   {
+    #                                       'user': user.email,
+    #                                       'domain': current_site.domain,
+    #                                       'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+    #                                       'token': account_activation_token.make_token(user),
+    #                                       'protocol': 'https' if request.is_secure() else 'http'
+    #
+    #                                   })
+    #     try:
+    #         send_mail(
+    #             email_subject,
+    #             email_body,
+    #             #
+    #             'info@sharpmind.club',  # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+    #             # 'pawel.91.kaczmarek@gmail.com', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
+    #             ['szachista49@gmail.com'],  # to email na sztywno
+    #
+    #             # reply_to=['szachista49@gmail.com'],
+    #             # headers={'Message-ID': 'foo'},
+    #             fail_silently=False)
+    #         # messages.success(requests, f"Aby aktywować konto sprawdź maila: {self.clean_email()} i kliknij w link aktywacyjny")
+    #         print("wysłano maila")
+    #         return email_subject
+    #
+    #     except BadHeaderError:
+    #         # messages.error(requests, "coś poszło nie tak")
+    #         return email_subject
 
 
 class UserSettingsForm(forms.ModelForm):

@@ -3,11 +3,15 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail, BadHeaderError
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str, force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.generic import ListView
+from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView
 
 from charity_app.forms import SignUpForm, UserSettingsForm
@@ -182,20 +186,55 @@ def logout_view(request):
     return redirect("Landing_page")
 
 
-class Register(CreateView):
+class Register(View):
     """USER CREATION VIEW"""
 
     form_class = SignUpForm
-    success_url = reverse_lazy('login')
+    # success_url = reverse_lazy('login')
     template_name = 'register.html'
-    success_message = "Your profile was created successfully"
+    # success_message = "Your profile was created successfully"
 
-    def get_form_kwargs(self):
-        """REQUEST SEND AS ARGUMENT TO FORM, THANKS THIS FORM HAS ACCESS TO USER OBJECT"""
+    # def get_form_kwargs(self):
+    #     """REQUEST SEND AS ARGUMENT TO FORM, THANKS THIS FORM HAS ACCESS TO USER OBJECT"""
+    #
+    #     kwargs = super().get_form_kwargs()
+    #     kwargs.update({'request': self.request})
+    #     return kwargs
 
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'request': self.request})
-        return kwargs
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            # form.save()
+            user = form.save(commit=False)
+            user.is_active = False  # Deactivate account till it is confirmed
+            user.username = request.POST['email']
+            user.save()
+
+            current_site = get_current_site(request)
+            email_subject = f"Witaj {user.email}"
+            email_message = render_to_string('template_activation_account.html', {
+                'user': user.email,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+
+            send_mail(
+                email_subject,
+                email_message,
+                'info@sharpmind.club',
+                ['szachista49@gmail.com'],  # to email na sztywno, [request.POST['email']],
+                fail_silently=False)
+            print("wysłano maila")
+            messages.success(request, 'Aby ukończyć rejestrację, potwierdź email')
+
+            return redirect('login')
+
+        return render(request, self.template_name, {'form': form})
 
 
 def activation(request, uidb64, token):
@@ -217,6 +256,7 @@ def activation(request, uidb64, token):
     else:
         messages.error(request, "Link aktywacyjny jest nieaktywny")
         return redirect('Landing_page')
+
 
 class UserProfile(ListView):
     """PROFILE VIEW"""

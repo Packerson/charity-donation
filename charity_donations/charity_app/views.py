@@ -125,21 +125,27 @@ class LandingPage(ListView):
 
 class ContactView(View):
 
-    
+    """SENDING MESSAGES TO PAGE ADMINISTRATOR AND USER IF NOT ANONYMOUS """
 
     def post(self, request):
 
+        """GET ADMIN EMAILS"""
 
         admin_users = User.objects.filter(is_staff=True)
         admin_email_address = []
         for email_address in admin_users:
             admin_email_address.append(email_address.email)
 
+        """GET VALUE FORM CONTACT FORM"""
+
         name = request.POST['name']
         surname = request.POST['surname']
         message_form = request.POST['message']
+        """ CHECK IF USER IS AnonymousUser"""
         username = request.user if request.user != "AnonymousUser" else ""
         print(username)
+
+        """EMAIL DETAILS"""
 
         email_subject = "Wiadomość wysłana przez formularz kontaktowy"
         email_message = render_to_string('contact_email.html', {
@@ -149,9 +155,10 @@ class ContactView(View):
             'message_form': message_form
         })
 
+        email_addresses = admin_email_address.append(request.user.email) #ADD USER.EMAIL TO SEND
+
         """SEND EMAIL WITH DETAILS"""
-        email_addresses = admin_email_address.append(request.user.email)
-        print(admin_email_address)
+
         send_mail(
             email_subject,
             email_message,

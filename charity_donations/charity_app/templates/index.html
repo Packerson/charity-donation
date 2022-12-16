@@ -5,7 +5,9 @@
 
 {% block content %}
 
-
+       {% for message in messages %}
+              {{ message }}
+          {% endfor %}
 
       <div class="slogan container container--90">
         <div class="slogan--item">
@@ -173,8 +175,6 @@
     </section>
 
 
-
-    <script src="{% static 'js/app.js' %}"></script>
 
 
 

@@ -32,7 +32,7 @@ urlpatterns = [
 
     path('adddonation/', login_required(AddDonation.as_view()), name='Add_donation'),
     path('confirmation/', confirmation_view, name='Confirmation'),
-    path('confirmation/', ContactView.as_view(), name='Contact'),
+    path('Contact/', ContactView.as_view(), name='Contact'),
     path('donation/<int:pk>', login_required(UpdateDonation.as_view()), name='Update_donation'),
 
     path('login/', login_view, name='login'),

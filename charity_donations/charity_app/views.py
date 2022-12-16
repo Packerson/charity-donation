@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail, BadHeaderError
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -120,6 +121,43 @@ class LandingPage(ListView):
         #
         # context['list_exams'] = file_exams
         return context
+
+
+class ContactView(View):
+
+    @staticmethod
+    def email_addresses():
+        admin_emails = list(User.objects.filter(is_staff=True).email)
+        print(admin_emails)
+        return admin_emails
+
+    def post(self, request):
+        name = request.POST['name']
+        surname = request.POST['surname']
+        message_form = request.POST['message']
+        username = request.user if request.user else ""
+        email_subject = "Wiadomość wysłana przez formularz kontaktowy"
+        email_message = render_to_string('contact_email.html', {
+            'name': name,
+            "surname": surname,
+            'username': username,
+            'message_form': message_form
+        })
+        try:
+            send_mail(
+                email_subject,
+                email_message,
+                'info@sharpmind.club',
+                self.email_addresses().append(request.user.email),
+                fail_silently=False
+            )
+            print('wysłano maila kontaktowego')
+            messages.success(request, "Wiadomość została wysłana przez formularz kontaktowy")
+
+        except BadHeaderError:
+            return HttpResponse('Invalid header found.')
+
+        return render(request, 'Landing_page')
 
 
 class AddDonation(CreateView):

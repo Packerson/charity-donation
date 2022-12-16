@@ -147,3 +147,5 @@ class UserSettingsForm(forms.ModelForm):
             last_name = self.cleaned_data['last_name']
         print(last_name)
         return last_name
+
+

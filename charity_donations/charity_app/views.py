@@ -3,11 +3,16 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail, BadHeaderError
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str, force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.generic import ListView
+from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView
 
 from charity_app.forms import SignUpForm, UserSettingsForm
@@ -118,6 +123,43 @@ class LandingPage(ListView):
         return context
 
 
+class ContactView(View):
+
+    @staticmethod
+    def email_addresses():
+        admin_emails = list(User.objects.filter(is_staff=True).email)
+        print(admin_emails)
+        return admin_emails
+
+    def post(self, request):
+        name = request.POST['name']
+        surname = request.POST['surname']
+        message_form = request.POST['message']
+        username = request.user if request.user else ""
+        email_subject = "Wiadomość wysłana przez formularz kontaktowy"
+        email_message = render_to_string('contact_email.html', {
+            'name': name,
+            "surname": surname,
+            'username': username,
+            'message_form': message_form
+        })
+        try:
+            send_mail(
+                email_subject,
+                email_message,
+                'info@sharpmind.club',
+                self.email_addresses().append(request.user.email),
+                fail_silently=False
+            )
+            print('wysłano maila kontaktowego')
+            messages.success(request, "Wiadomość została wysłana przez formularz kontaktowy")
+
+        except BadHeaderError:
+            return HttpResponse('Invalid header found.')
+
+        return render(request, 'Landing_page')
+
+
 class AddDonation(CreateView):
     model = Donation
     fields = ['quantity', 'categories', 'institution', 'address',
@@ -182,23 +224,69 @@ def logout_view(request):
     return redirect("Landing_page")
 
 
-class Register(CreateView):
-    """USER CREATION VIEW"""
+class Register(View):
+    """USER CREATION VIEW
+    WITH EMAIL ACTIVATION LINK """
 
     form_class = SignUpForm
-    success_url = reverse_lazy('login')
+    # success_url = reverse_lazy('login')
     template_name = 'register.html'
-    success_message = "Your profile was created successfully"
+    # success_message = "Your profile was created successfully"
 
-    def get_form_kwargs(self):
-        """REQUEST SEND AS ARGUMENT TO FORM, THANKS THIS FORM HAS ACCESS TO USER OBJECT"""
+    # def get_form_kwargs(self):
+    #     """REQUEST SEND AS ARGUMENT TO FORM, THANKS THIS FORM HAS ACCESS TO USER OBJECT"""
+    #
+    #     kwargs = super().get_form_kwargs()
+    #     kwargs.update({'request': self.request})
+    #     return kwargs
 
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'request': self.request})
-        return kwargs
+    def get(self, request):
+        """TEMPLATE VIEW"""
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        """FORM VIEW, """
+
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            """IF FORM VALID, 
+            USER IS NOT ACTIVE"""
+            # form.save()
+            user = form.save(commit=False)
+            user.is_active = False  # Deactivate account till it is confirmed
+            user.username = request.POST['email']
+            user.save()
+
+            current_site = get_current_site(request)
+            email_subject = f"Witaj {user.email}"
+            email_message = render_to_string('template_activation_account.html', {
+                'user': user.email,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            """SEND EMAIL WITH DETAILS"""
+            send_mail(
+                email_subject,
+                email_message,
+                'info@sharpmind.club',
+                ['szachista49@gmail.com'],  # to email na sztywno, [request.POST['email']],
+                fail_silently=False)
+            print("wysłano maila")
+            messages.success(request, 'Aby ukończyć rejestrację, potwierdź email')
+
+            return redirect('login')
+
+        return render(request, self.template_name, {'form': form})
 
 
 def activation(request, uidb64, token):
+
+    """VIEW SET THANKS TO ACTIVATION LINK,
+    DECODE UIDB64 AND TOKEN
+    user_is_active = True"""
+
     User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -208,6 +296,8 @@ def activation(request, uidb64, token):
         user = None
 
     if user is not None and account_activation_token.check_token(user, token):
+
+        """USER_ACTIVE = TRUE"""
         user.is_active = True
         user.save()
 
@@ -217,6 +307,7 @@ def activation(request, uidb64, token):
     else:
         messages.error(request, "Link aktywacyjny jest nieaktywny")
         return redirect('Landing_page')
+
 
 class UserProfile(ListView):
     """PROFILE VIEW"""

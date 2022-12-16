@@ -60,7 +60,8 @@
       <div class="contact">
         <h2>Skontaktuj się z nami</h2>
         <h3>Formularz kontaktowy</h3>
-        <form class="form--contact">
+        <form name="contact_form" action="{% url 'Contact' %}" class="form--contact" method="post">
+            {% csrf_token %}
           <div class="form-group form-group--50">
             <input type="text" name="name" placeholder="Imię" />
           </div>
@@ -76,7 +77,7 @@
             ></textarea>
           </div>
 
-          <button class="btn" type="submit">Wyślij</button>
+          <button class="btn" href="{% url 'Contact' %}" type="button">Wyślij</button>
         </form>
       </div>
       <div class="bottom-line">

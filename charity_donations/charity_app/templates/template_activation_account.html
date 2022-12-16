@@ -1,8 +1,8 @@
 {% autoescape off %}
 
-   Hi {{user.username}}
+   Witaj {{user}}
 
 Kliknij w poniższy link do dokończyć rejestrację
-http:// {{ domain }} {% url 'Activate' uidb64=uid token=token %}
+http://{{ domain }}{% url 'Activate' uidb64=uid token=token %}
 
 {% endautoescape %}

@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import PasswordChangeView, PasswordContextMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
@@ -12,7 +12,7 @@ from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.generic import ListView
 from django.views.generic.base import View
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 
 from charity_app.forms import SignUpForm, UserSettingsForm
 from charity_app.models import Donation, Institution, Category
@@ -434,80 +434,8 @@ def password_success(request):
     context = {'user_id': request.user.id}
     return render(request, "password_success.html", context)
 
-#
-# class ForgetPasswordEmailVerificationView(View):
-#     template_name = 'forget_password.html'
-#
-#     def get(self, request):
-#         return render(request, self.template_name)
-#
-#     def post(self, request):
-#         email = request.POST['email']
-#
-#         if not User.objects.get(email=email):
-#             messages.error(request, "Email nieprawidłowy, \n"
-#                                     "Spróbuj jeszcze raz")
-#
-#             return render(request, self.template_name)
-#
-#         else:
-#             user = User.objects.get(email=email)
-#             current_site = get_current_site(request)
-#             email_subject = f"Witaj {user.email}"
-#             email_message = render_to_string('email_password_reset.html', {
-#                 'user': user.email,
-#                 'domain': current_site.domain,
-#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-#                 'token': account_activation_token.make_token(user),
-#             })
-#             """SEND EMAIL WITH DETAILS"""
-#             send_mail(
-#                 email_subject,
-#                 email_message,
-#                 'info@sharpmind.club',
-#                 ['szachista49@gmail.com'],  # to email na sztywno, [request.POST['email']],
-#                 fail_silently=False)
-#             print("wysłano maila")
-#             messages.success(request, "Link został wysłany na podany email")
-#
-#             return render(request, self.template_name)
-#
-#
-# class ResetForgottenPasswordView(View):
-#     template_name = "password_reset.html"
-#     # form_class = PasswordResetForm
-#
-#     User = get_user_model()
-#
-#     def get(self, request, uidb64, token):
-#
-#         User = get_user_model()
-#         try:
-#             uid = force_str(urlsafe_base64_decode(uidb64))
-#             user = User.objects.get(pk=uid)
-#
-#         except:
-#             user = None
-#
-#         if user is not None and account_activation_token.check_token(user, token):
-#             context = {'user': user, 'form': self.form_class()}
-#             return render(request, self.template_name, context)
-#
-#         else:
-#             messages.error(request, "Link do zmiany hasła jest nieaktywny")
-#             return redirect('Landing_page')
-#
-#     def post(self, request):
-#         form = self.form_class(request.POST)
-#         user = User.objects.get(email=request.POST['user'])
-#         if form.is_valid():
-#             user.set_password(form.password1)
-#             print(form.password1)
-#             user.save()
-#             messages.success(request, "Hasło zostało zmienione,\n"
-#                                       "Zaloguj się")
-#             return redirect('login')
-#
-#         else:
-#             messages.error(request, "Spróbuj jeszcze raz")
-#             return render(request, self.template_name, self.form_class)
+
+# class PasswordResetView(PasswordContextMixin, FormView):
+#     from_email = 'info@sharpmind.club'
+
+

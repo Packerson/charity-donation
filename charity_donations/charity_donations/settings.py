@@ -132,7 +132,10 @@ except ModuleNotFoundError:
     """EMAIL SETTINGS"""
 
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+DEFAULT_FROM_EMAIL = 'info@sharpmind.club'
 SENDGRID_API_KEY = EMAIL_PASSWORD
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+
+
 
 PASSWORD_RESET_TIMEOUT = 14400

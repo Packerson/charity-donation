@@ -18,7 +18,7 @@ from django.contrib import admin
 """login_required redirect to login"""
 from django.contrib.auth.decorators import login_required
 from django.urls import path
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth import views as auth_view
 
 
 from charity_app.views import LandingPage, AddDonation, login_view, \
@@ -44,6 +44,11 @@ urlpatterns = [
     path('profile/password/', ChangingPasswordView.as_view(), name='password_change'),
     path('profile/password/success', password_success, name='password_success'),
     path('activate/<uidb64>/<token>', activation, name='Activate'),
+
+    path('reset_password/', auth_view.PasswordResetView.as_view(), name='password_reset'),
+    path('reset_password_sent/', auth_view.PasswordResetDoneView.as_view(), name='reset_password_don'),
+    path('reset/<uidb64>/<token>', auth_view.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset_password_complete/', auth_view.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
 
 

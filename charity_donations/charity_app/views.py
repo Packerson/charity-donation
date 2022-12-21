@@ -4,8 +4,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail, BadHeaderError
-from django.http.response import HttpResponse
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -124,18 +123,18 @@ class LandingPage(ListView):
 
 
 class ContactView(View):
-
     """SENDING MESSAGES TO PAGE ADMINISTRATOR AND USER IF NOT ANONYMOUS """
 
     def post(self, request):
 
-        """GET ADMIN EMAILS"""
+        """GET ADMIN EMAILS, if i used static method to get admin email address, it didn't work,
+        first comper to none and later showed email addresses list """
 
         admin_users = User.objects.filter(is_staff=True)
-        admin_email_address = []
+        email_addresses = []
         for email_address in admin_users:
-            admin_email_address.append(email_address.email)
-
+            email_addresses.append(email_address.email)
+        print(email_addresses)
         """GET VALUE FORM CONTACT FORM"""
 
         name = request.POST['name']
@@ -154,10 +153,11 @@ class ContactView(View):
             'username': username,
             'message_form': message_form
         })
+        if request.user != 'AnonymousUser':
+            # ADD USER.EMAIL TO SEND
+            email_addresses.append(request.user.email)
 
-        email_addresses = admin_email_address.append(request.user.email) #ADD USER.EMAIL TO SEND
-
-        """SEND EMAIL WITH DETAILS"""
+        """SEND EMAIL WITH DETAILS, if email one of the email address is incorrect email wont be send"""
 
         send_mail(
             email_subject,
@@ -243,6 +243,7 @@ class Register(View):
     form_class = SignUpForm
     # success_url = reverse_lazy('login')
     template_name = 'register.html'
+
     # success_message = "Your profile was created successfully"
 
     # def get_form_kwargs(self):
@@ -294,10 +295,9 @@ class Register(View):
 
 
 def activation(request, uidb64, token):
-
-    """VIEW SET THANKS TO ACTIVATION LINK,
+    """VIEW SET user_is_active = True,  through ACTIVATION LINK,
     DECODE UIDB64 AND TOKEN
-    user_is_active = True"""
+    """
 
     User = get_user_model()
     try:
@@ -433,3 +433,81 @@ def password_success(request):
 
     context = {'user_id': request.user.id}
     return render(request, "password_success.html", context)
+
+#
+# class ForgetPasswordEmailVerificationView(View):
+#     template_name = 'forget_password.html'
+#
+#     def get(self, request):
+#         return render(request, self.template_name)
+#
+#     def post(self, request):
+#         email = request.POST['email']
+#
+#         if not User.objects.get(email=email):
+#             messages.error(request, "Email nieprawidłowy, \n"
+#                                     "Spróbuj jeszcze raz")
+#
+#             return render(request, self.template_name)
+#
+#         else:
+#             user = User.objects.get(email=email)
+#             current_site = get_current_site(request)
+#             email_subject = f"Witaj {user.email}"
+#             email_message = render_to_string('email_password_reset.html', {
+#                 'user': user.email,
+#                 'domain': current_site.domain,
+#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#                 'token': account_activation_token.make_token(user),
+#             })
+#             """SEND EMAIL WITH DETAILS"""
+#             send_mail(
+#                 email_subject,
+#                 email_message,
+#                 'info@sharpmind.club',
+#                 ['szachista49@gmail.com'],  # to email na sztywno, [request.POST['email']],
+#                 fail_silently=False)
+#             print("wysłano maila")
+#             messages.success(request, "Link został wysłany na podany email")
+#
+#             return render(request, self.template_name)
+#
+#
+# class ResetForgottenPasswordView(View):
+#     template_name = "password_reset.html"
+#     # form_class = PasswordResetForm
+#
+#     User = get_user_model()
+#
+#     def get(self, request, uidb64, token):
+#
+#         User = get_user_model()
+#         try:
+#             uid = force_str(urlsafe_base64_decode(uidb64))
+#             user = User.objects.get(pk=uid)
+#
+#         except:
+#             user = None
+#
+#         if user is not None and account_activation_token.check_token(user, token):
+#             context = {'user': user, 'form': self.form_class()}
+#             return render(request, self.template_name, context)
+#
+#         else:
+#             messages.error(request, "Link do zmiany hasła jest nieaktywny")
+#             return redirect('Landing_page')
+#
+#     def post(self, request):
+#         form = self.form_class(request.POST)
+#         user = User.objects.get(email=request.POST['user'])
+#         if form.is_valid():
+#             user.set_password(form.password1)
+#             print(form.password1)
+#             user.save()
+#             messages.success(request, "Hasło zostało zmienione,\n"
+#                                       "Zaloguj się")
+#             return redirect('login')
+#
+#         else:
+#             messages.error(request, "Spróbuj jeszcze raz")
+#             return render(request, self.template_name, self.form_class)

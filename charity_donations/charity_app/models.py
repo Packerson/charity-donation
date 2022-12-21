@@ -53,7 +53,6 @@ class Users(models.Model):
 """OVERRIDE USER AUTHENTICATE , ALLOW TO LOGIN BY USERNAME OR EMAIL
     ALSO NEED TO IMPORT IN SETTINGS.PY """
 
-
 class EmailBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         try:  # to allow authentication through email or username or any other field, modify the below statement

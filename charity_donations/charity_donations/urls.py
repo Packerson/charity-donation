@@ -45,10 +45,18 @@ urlpatterns = [
     path('profile/password/success', password_success, name='password_success'),
     path('activate/<uidb64>/<token>', activation, name='Activate'),
 
-    path('reset_password/', auth_view.PasswordResetView.as_view(), name='password_reset'),
-    path('reset_password_sent/', auth_view.PasswordResetDoneView.as_view(), name='reset_password_don'),
-    path('reset/<uidb64>/<token>', auth_view.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset_password_complete/', auth_view.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('reset_password/', auth_view.PasswordResetView.as_view(
+        template_name='password_forget/password_reset.html'
+    ), name='password_reset'),
+    path('reset_password_sent/', auth_view.PasswordResetDoneView.as_view(
+        template_name='password_forget/password_reset_sent.html'
+    ), name='password_reset_done'),
+    path('reset/<uidb64>/<token>', auth_view.PasswordResetConfirmView.as_view(
+        template_name='password_forget/password_reset_form.html'
+    ), name='password_reset_confirm'),
+    path('reset_password_complete/', auth_view.PasswordResetCompleteView.as_view(
+        template_name='password_forget/password_reset_form.html'
+    ), name='password_reset_complete'),
 
 
 

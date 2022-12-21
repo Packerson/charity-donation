@@ -14,12 +14,12 @@ from django.views.generic import ListView
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView, FormView
 
-from charity_app.forms import SignUpForm, UserSettingsForm
+from charity_app.forms import SignUpForm, UserSettingsForm, SetPasswordForm
 from charity_app.models import Donation, Institution, Category
 from charity_app.tokens import account_activation_token
 
 """
-https://www.youtube.com/watch?v=xNqnHmXIuzU watch!
+Add widget to SetPasswordForm
 
 przycisk submit nie działa, pobrać go do js i zrobić submit
 
@@ -435,7 +435,6 @@ def password_success(request):
     return render(request, "password_success.html", context)
 
 
-# class PasswordResetView(PasswordContextMixin, FormView):
-#     from_email = 'info@sharpmind.club'
-
+class PasswordResetConfirmView(PasswordContextMixin, FormView):
+    form_class = SetPasswordForm
 

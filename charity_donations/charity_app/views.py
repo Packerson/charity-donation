@@ -14,7 +14,7 @@ from django.views.generic import ListView
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView, FormView
 
-from charity_app.forms import SignUpForm, UserSettingsForm, SetPasswordForm
+from charity_app.forms import SignUpForm, UserSettingsForm  #,SetPasswordForm
 from charity_app.models import Donation, Institution, Category
 from charity_app.tokens import account_activation_token
 
@@ -429,12 +429,16 @@ class ChangingPasswordView(PasswordChangeView):
 
 
 def password_success(request):
-    """METHOD FOR REDIRECT AFTER SUCCESSFULLY CHANGING PASSWORD"""
+    """METHOD FOR REDIRECT AFTER SUCCESSFULLY CHANGING PASSWORD
+    in user edit panel"""
 
     context = {'user_id': request.user.id}
     return render(request, "password_success.html", context)
 
 
-class PasswordResetConfirmView(PasswordContextMixin, FormView):
-    form_class = SetPasswordForm
+# class PasswordResetConfirmView(PasswordContextMixin, FormView):
+#     """Override default ResetPasswordViews,
+#         -change templates,
+#         -change """
+#     form_class = SetPasswordForm
 

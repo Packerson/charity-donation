@@ -4,21 +4,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext, gettext_lazy as _
 
-from django.contrib.sites.shortcuts import get_current_site
-
-from django.core.mail import send_mail
-from django.http import BadHeaderError
-from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
-
-from charity_app.tokens import account_activation_token
-
-
-# def activate_email(request, to_email):
-#     messages.success(request, f" , sprawdź email: {to_email},"
-#                               f" i wejdź w link aktywacyjny ")
-
 
 class SignUpForm(UserCreationForm):
     """USER CREATION FORM WITH EMAIL, PASSWORD, PASSWORD2 FIELDS
@@ -35,55 +20,6 @@ class SignUpForm(UserCreationForm):
         self.fields['email'].widget.attrs = {'class': 'form-group', 'placeholder': 'Email'}
         self.fields['password1'].widget.attrs = {'class': 'form-group', 'placeholder': 'Hasło'}
         self.fields['password2'].widget.attrs = {'class': 'form-group', 'placeholder': 'Powtórz hasło'}
-
-    # def clean_email(self):
-    #     email = self.cleaned_data['email']
-    #     return email
-
-    # def save(self, commit=False):
-    #
-    #     """ EMAIL = USERNAME"""
-    #     """need to rewrite username"""
-    #
-    #     self.instance.is_active = False
-    #     self.instance.username = self.clean_email()
-    #     super(SignUpForm, self).save()
-    #     # self.send_email(email=self.clean_email(), request=self.request)
-    #     return super(SignUpForm, self), self.send_email(email=self.clean_email(), request=self.request)
-    #
-    # @staticmethod
-    # def send_email(email, request):
-    #     user = User.objects.get(email=email)
-    #     email_subject = f"Witaj {user.email} "
-    #     current_site = get_current_site(request)
-    #     email_body = render_to_string('template_activation_account.html',
-    #                                   {
-    #                                       'user': user.email,
-    #                                       'domain': current_site.domain,
-    #                                       'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-    #                                       'token': account_activation_token.make_token(user),
-    #                                       'protocol': 'https' if request.is_secure() else 'http'
-    #
-    #                                   })
-    #     try:
-    #         send_mail(
-    #             email_subject,
-    #             email_body,
-    #             #
-    #             'info@sharpmind.club',  # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-    #             # 'pawel.91.kaczmarek@gmail.com', # 'from@example.com', If omitted, the DEFAULT_FROM_EMAIL setting is used.
-    #             ['szachista49@gmail.com'],  # to email na sztywno
-    #
-    #             # reply_to=['szachista49@gmail.com'],
-    #             # headers={'Message-ID': 'foo'},
-    #             fail_silently=False)
-    #         # messages.success(requests, f"Aby aktywować konto sprawdź maila: {self.clean_email()} i kliknij w link aktywacyjny")
-    #         print("wysłano maila")
-    #         return email_subject
-    #
-    #     except BadHeaderError:
-    #         # messages.error(requests, "coś poszło nie tak")
-    #         return email_subject
 
 
 class UserSettingsForm(forms.ModelForm):
@@ -151,38 +87,41 @@ class UserSettingsForm(forms.ModelForm):
         return last_name
 
 
-class SetPasswordForm(forms.Form):
-    """
-    A form that lets a user change set their password without entering the old
-    password
-    """
-    error_messages = {
-        'password_mismatch': _("The two password fields didn't match."),
-    }
-    new_password1 = forms.CharField(label=_("New password"),
-                                    widget=forms.PasswordInput())
-    new_password2 = forms.CharField(label=_("New password confirmation"),
-                                    widget=forms.PasswordInput())
+"""Want to override widget for display two password inputs"""
 
-    def __init__(self, user, *args, **kwargs):
-        self.user = user
-        super(SetPasswordForm, self).__init__(*args, **kwargs)
-        self.fields['new_password1'].widget.attrs = {'class': 'form-group', 'placeholder':'Wpisz nowe hasło'}
-        self.fields['new_password2'].widget.attrs = {'class': 'form-group'}
 
-    def clean_new_password2(self):
-        password1 = self.cleaned_data.get('new_password1')
-        password2 = self.cleaned_data.get('new_password2')
-        if password1 and password2:
-            if password1 != password2:
-                raise forms.ValidationError(
-                    self.error_messages['password_mismatch'],
-                    code='password_mismatch',
-                )
-        return password2
-
-    def save(self, commit=True):
-        self.user.set_password(self.cleaned_data['new_password1'])
-        if commit:
-            self.user.save()
-        return self.user
+# class SetPasswordForm(forms.Form):
+#     """
+#     A form that lets a user change set their password without entering the old
+#     password
+#     """
+#     error_messages = {
+#         'password_mismatch': _("The two password fields didn't match."),
+#     }
+#     new_password1 = forms.CharField(label=_("New password"),
+#                                     widget=forms.PasswordInput())
+#     new_password2 = forms.CharField(label=_("New password confirmation"),
+#                                     widget=forms.PasswordInput())
+#
+#     def __init__(self, user, *args, **kwargs):
+#         self.user = user
+#         super(SetPasswordForm, self).__init__(*args, **kwargs)
+#         self.fields['new_password1'].widget.attrs = {'class': 'form-group', 'placeholder':'Wpisz nowe hasło'}
+#         self.fields['new_password2'].widget.attrs = {'class': 'form-group'}
+#
+#     def clean_new_password2(self):
+#         password1 = self.cleaned_data.get('new_password1')
+#         password2 = self.cleaned_data.get('new_password2')
+#         if password1 and password2:
+#             if password1 != password2:
+#                 raise forms.ValidationError(
+#                     self.error_messages['password_mismatch'],
+#                     code='password_mismatch',
+#                 )
+#         return password2
+#
+#     def save(self, commit=True):
+#         self.user.set_password(self.cleaned_data['new_password1'])
+#         if commit:
+#             self.user.save()
+#         return self.user

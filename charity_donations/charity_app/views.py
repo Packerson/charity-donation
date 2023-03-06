@@ -21,16 +21,7 @@ from charity_app.tokens import account_activation_token
 """
 Add widget to SetPasswordForm
 
-przycisk submit nie działa, pobrać go do js i zrobić submit
-
 pobrać user.id z requesta i przesłać go do zapisu 
-
-
-try data! in js 
-
-js do wymiany! Uncaught TypeError: chosenCategories[0] is undefined
-pagination
-"""
 
 """
 superuser:
